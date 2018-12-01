@@ -4,7 +4,7 @@ public class EnemyGroup : MonoBehaviour
 {
     private void Update()
     {
-        var humans = Game.Instance.GetDungeon().GetHumans();
+        var humans = Game.Instance.GetHumans();
 
         foreach(var human in humans)
         {
