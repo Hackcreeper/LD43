@@ -11,6 +11,15 @@ public class Human : MonoBehaviour
     [SerializeField]
     private string _prefabName;
 
+    [SerializeField]
+    private bool _enemy;
+
+    [SerializeField]
+    private Classes _class;
+
+    [SerializeField]
+    private bool _canRunAction = true;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -47,4 +56,22 @@ public class Human : MonoBehaviour
     }
 
     public string GetPrefabName() => _prefabName;
+
+    private void OnMouseDown()
+    {
+        if (_enemy || !Game.Instance.IsOngoingBattle() || !Game.Instance.GetArena().IsPlayerTurn())
+        {
+            return;
+        }
+
+        var panel = Instantiate(Resources.Load<GameObject>("ActionsPanel"));
+        panel.transform.SetParent(Game.Instance.GetCanvas());
+        panel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+
+        panel.GetComponent<ActionPanel>().SetHuman(this);
+    }
+
+    public Classes GetClass() => _class;
+
+    public bool CanRunAction() => _canRunAction;
 }

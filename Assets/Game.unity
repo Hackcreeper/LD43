@@ -2605,6 +2605,7 @@ MonoBehaviour:
   _dungeons:
   - {fileID: 317313649}
   _arena: {fileID: 1864404442}
+  _canvas: {fileID: 543303115}
 --- !u!4 &594127713
 Transform:
   m_ObjectHideFlags: 0
