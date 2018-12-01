@@ -17,6 +17,8 @@ ModelImporter:
     100022: Sword
     100024: Player
     100026: Bow
+    100028: Bow_
+    100030: Prefab
     400000: Armature
     400002: Bone
     400004: Bone_001
@@ -31,12 +33,16 @@ ModelImporter:
     400022: Sword
     400024: Player
     400026: Bow
+    400028: Bow_
+    400030: Prefab
     2100000: Material
     2100002: Material__Material_Base_Color_png
     4300000: Cube
     4300002: Sword
     4300004: Player
     4300006: Bow
+    4300008: Prefab
+    4300010: Bow_
     7400000: Idle
     7400002: ArmatureAction
     7400004: Walk
@@ -47,6 +53,8 @@ ModelImporter:
     13700002: Sword
     13700004: Player
     13700006: Bow
+    13700008: Bow_
+    13700010: Prefab
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
