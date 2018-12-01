@@ -20,6 +20,9 @@ public class Game : MonoBehaviour
     [SerializeField]
     private Arena _arena;
 
+    [SerializeField]
+    private Transform _canvas;
+
     private int _activeDungeon;
 
     private bool _ongoingBattle;
@@ -72,6 +75,8 @@ public class Game : MonoBehaviour
     public Human[] GetHumans() => _humans.ToArray();
 
     public bool IsOngoingBattle() => _ongoingBattle;
+
+    public Transform GetCanvas() => _canvas;
 
     public void StartBattle(string[] enemies)
     {
