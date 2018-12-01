@@ -163,19 +163,6 @@ public class Arena : MonoBehaviour
                 }
             }
         }
-
-        // and now... 
-        // 1.) hide all "info" marks √
-        // 3.) hide the panel √
-        // 3.) no new players should be selectable √
-        // 4.) end the action sequence when pressing "esc" √
-        // 5.) Mark all fields which are moveable √
-        // 6.) Handle click on field -> move unit √
-        // 7.) Reset the field colors √
-        // 8.) Remove info mark for this specific unit √
-        // 9.) Show all other info marks √
-        // 10.) End the action √
-        // 11.) Switch rounds √
     }
 
     private void Update()
