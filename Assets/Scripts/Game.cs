@@ -17,7 +17,12 @@ public class Game : MonoBehaviour
     [SerializeField]
     private Dungeon[] _dungeons;
 
+    [SerializeField]
+    private Arena _arena;
+
     private int _activeDungeon;
+
+    private bool _ongoingBattle;
 
     private void Awake()
     {
@@ -48,7 +53,7 @@ public class Game : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !_ongoingBattle)
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -65,4 +70,12 @@ public class Game : MonoBehaviour
     }
 
     public Human[] GetHumans() => _humans.ToArray();
+
+    public bool IsOngoingBattle() => _ongoingBattle;
+
+    public void StartBattle(string[] enemies)
+    {
+        _ongoingBattle = true;
+        _arena.StartFight(enemies);
+    }
 }
