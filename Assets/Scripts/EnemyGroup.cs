@@ -8,7 +8,7 @@ public class EnemyGroup : MonoBehaviour
 
         foreach(var human in humans)
         {
-            if (Vector3.Distance(human.transform.position, transform.position) <= 7f)
+            if (Vector3.Distance(human.transform.position, transform.position) <= 4f)
             {
                 Debug.Log("BATTLE!");
                 break;
