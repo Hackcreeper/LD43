@@ -15,6 +15,7 @@ ModelImporter:
     100018: Cube
     100020: //RootNode
     100022: Sword
+    100024: Player
     400000: Armature
     400002: Bone
     400004: Bone_001
@@ -27,15 +28,20 @@ ModelImporter:
     400018: Cube
     400020: //RootNode
     400022: Sword
+    400024: Player
     2100000: Material
     4300000: Cube
     4300002: Sword
+    4300004: Player
     7400000: Idle
     7400002: ArmatureAction
     7400004: Walk
+    7400006: Sword_Hit
+    7400008: Sword_Smash
     9500000: //RootNode
     13700000: Cube
     13700002: Sword
+    13700004: Player
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
@@ -105,6 +111,62 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Sword_Hit
+      takeName: Default Take
+      firstFrame: 110
+      lastFrame: 150
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Sword_Smash
+      takeName: Default Take
+      firstFrame: 170
+      lastFrame: 209
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
