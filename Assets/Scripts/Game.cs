@@ -78,6 +78,8 @@ public class Game : MonoBehaviour
 
     public Transform GetCanvas() => _canvas;
 
+    public Arena GetArena() => _arena;
+
     public void StartBattle(string[] enemies)
     {
         _ongoingBattle = true;

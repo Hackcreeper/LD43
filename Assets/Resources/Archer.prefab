@@ -394,6 +394,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 95759456041690906}
   _prefabName: Archer
+  _enemy: 0
+  _class: 1
 --- !u!136 &136100906233214966
 CapsuleCollider:
   m_ObjectHideFlags: 1

@@ -29,7 +29,7 @@ public class Arena : MonoBehaviour
         SpawnPlayerUnits();
         SpawnEnemyUnits(enemies);
 
-        _yourTurn = Random.Range(0, 100) <= 50;
+        _yourTurn = Random.Range(0, 100) <= 50 || true;
         _fightText.text = _yourTurn ? "Your turn!" : "Enemies turn!";
     }
 
@@ -92,4 +92,6 @@ public class Arena : MonoBehaviour
 
         return null;
     }
+
+    public bool IsPlayerTurn() => _yourTurn;
 }
