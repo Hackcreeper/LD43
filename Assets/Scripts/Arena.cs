@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
@@ -18,10 +19,13 @@ public class Arena : MonoBehaviour
 
     private Human[,] _board;
 
+    private List<Human> _playerUnits = new List<Human>();
+
     private bool _yourTurn;
 
     public void StartFight(string[] enemies)
     {
+        _playerUnits = new List<Human>();
         _board = new Human[_fieldWidth, _fieldHeight];
 
         _fightText.gameObject.SetActive(true);
@@ -29,8 +33,10 @@ public class Arena : MonoBehaviour
         SpawnPlayerUnits();
         SpawnEnemyUnits(enemies);
 
-        _yourTurn = Random.Range(0, 100) <= 50 || true;
+        _yourTurn = Random.Range(0, 100) <= 50;
         _fightText.text = _yourTurn ? "Your turn!" : "Enemies turn!";
+
+        StartRound();
     }
 
     private void SpawnPlayerUnits()
@@ -54,6 +60,7 @@ public class Arena : MonoBehaviour
             fighter.transform.position = FindField(x+1, y+1).position;
 
             _board[x, y] = fighter.GetComponent<Human>();
+            _playerUnits.Add(fighter.GetComponent<Human>());
         }
     }
 
@@ -94,4 +101,16 @@ public class Arena : MonoBehaviour
     }
 
     public bool IsPlayerTurn() => _yourTurn;
+
+    private void StartRound()
+    {
+        if (_yourTurn)
+        {
+            foreach(var unit in _playerUnits)
+            {
+                var info = Instantiate(Resources.Load<GameObject>("Info"));
+                info.transform.position = unit.transform.position + new Vector3(0, 3.6f, 0);
+            }
+        }
+    }
 }

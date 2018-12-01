@@ -17,6 +17,9 @@ public class Human : MonoBehaviour
     [SerializeField]
     private Classes _class;
 
+    [SerializeField]
+    private bool _canRunAction = true;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -69,4 +72,6 @@ public class Human : MonoBehaviour
     }
 
     public Classes GetClass() => _class;
+
+    public bool CanRunAction() => _canRunAction;
 }
