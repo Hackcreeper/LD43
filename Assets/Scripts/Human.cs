@@ -5,6 +5,9 @@ public class Human : MonoBehaviour
 {
     private NavMeshAgent _agent;
 
+    [SerializeField]
+    private Animator _animator;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -14,6 +17,7 @@ public class Human : MonoBehaviour
     {
         _agent.isStopped = false;
         _agent.destination = targetPosition;
+        _animator.SetBool("walking", true);
     }
 
     private void Update()
@@ -21,6 +25,7 @@ public class Human : MonoBehaviour
         if (Vector3.Distance(transform.position, _agent.pathEndPosition) < 1.5f)
         {
             _agent.isStopped = true;
+            _animator.SetBool("walking", false);
         }
     }
 }
