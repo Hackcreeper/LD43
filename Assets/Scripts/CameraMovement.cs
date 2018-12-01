@@ -3,8 +3,19 @@ using System.Collections;
 
 public class CameraMovement : MonoBehaviour
 {
+    [SerializeField]
+    private Transform _fightPosition;
+
     private void Update()
     {
+        if (Game.Instance.IsOngoingBattle())
+        {
+            transform.position = _fightPosition.position;
+            transform.rotation = _fightPosition.rotation;
+
+            return;
+        }
+
         var average = GetAveragePosition();
 
         transform.position = new Vector3(

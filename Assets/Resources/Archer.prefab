@@ -393,6 +393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 95588601664652824}
+  _prefabName: Archer
 --- !u!136 &136100906233214966
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -402,8 +403,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1
-  m_Height: 8
+  m_Radius: 2
+  m_Height: 6
   m_Direction: 1
   m_Center: {x: 0, y: 2, z: 0}
 --- !u!137 &137905387129211726
