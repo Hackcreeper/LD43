@@ -20,6 +20,10 @@ public class Human : MonoBehaviour
     [SerializeField]
     private bool _canRunAction = true;
 
+    private int boardX;
+
+    private int boardY;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -59,7 +63,7 @@ public class Human : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (_enemy || !Game.Instance.IsOngoingBattle() || !Game.Instance.GetArena().IsPlayerTurn())
+        if (_enemy || !Game.Instance.IsOngoingBattle() || !Game.Instance.GetArena().IsPlayerTurn() || Game.Instance.GetArena().IsActionRunning() || !_canRunAction || Game.Instance.GetArena().IsPanelOpen())
         {
             return;
         }
@@ -69,9 +73,21 @@ public class Human : MonoBehaviour
         panel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
         panel.GetComponent<ActionPanel>().SetHuman(this);
+        Game.Instance.GetArena().OpenedPanel();
     }
 
     public Classes GetClass() => _class;
 
     public bool CanRunAction() => _canRunAction;
+
+    public void SetBoardPosition(int x, int y)
+    {
+        boardX = x;
+        boardY = y;
+    }
+
+    public int GetX() => boardX;
+    public int GetY() => boardY;
+
+    public void ExecutedAction() => _canRunAction = false;
 }

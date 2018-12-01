@@ -27,4 +27,10 @@ public class ActionPanel : MonoBehaviour
                 return "-";
         }
     }
+
+    public void Move()
+    {
+        Game.Instance.GetArena().StartAction(_human, BattleAction.Move);
+        Destroy(gameObject);
+    }
 }
