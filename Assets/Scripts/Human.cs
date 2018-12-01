@@ -68,12 +68,7 @@ public class Human : MonoBehaviour
             return;
         }
 
-        var panel = Instantiate(Resources.Load<GameObject>("ActionsPanel"));
-        panel.transform.SetParent(Game.Instance.GetCanvas());
-        panel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-
-        panel.GetComponent<ActionPanel>().SetHuman(this);
-        Game.Instance.GetArena().OpenedPanel();
+        Game.Instance.GetArena().OpenPanel(this);
     }
 
     public Classes GetClass() => _class;

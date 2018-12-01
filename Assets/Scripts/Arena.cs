@@ -40,6 +40,8 @@ public class Arena : MonoBehaviour
 
     private bool _isPanelOpen;
 
+    private GameObject _actionPanel;
+
     public void StartFight(string[] enemies)
     {
         _playerUnits = new List<Human>();
@@ -62,7 +64,7 @@ public class Arena : MonoBehaviour
         int playerMin = 0;
         int playerMax = _fieldWidth / 3;
 
-        foreach(var human in Game.Instance.GetHumans())
+        foreach (var human in Game.Instance.GetHumans())
         {
             var x = 0;
             var y = 0;
@@ -71,11 +73,11 @@ public class Arena : MonoBehaviour
             {
                 x = Random.Range(playerMin, playerMax);
                 y = Random.Range(0, _fieldHeight);
-            } while (_board[x,y] != null);
+            } while (_board[x, y] != null);
 
             var fighter = Instantiate(Resources.Load<GameObject>(human.GetPrefabName()));
             fighter.GetComponent<NavMeshAgent>().enabled = false;
-            fighter.transform.position = FindField(x+1, y+1).position;
+            fighter.transform.position = FindField(x + 1, y + 1).position;
 
             var comp = fighter.GetComponent<Human>();
             comp.SetBoardPosition(x, y);
@@ -90,7 +92,7 @@ public class Arena : MonoBehaviour
         int enemyMin = _fieldWidth - (_fieldWidth / 3);
         int enemyMax = _fieldWidth - 1;
 
-        foreach(var enemy in enemies)
+        foreach (var enemy in enemies)
         {
             var x = 0;
             var y = 0;
@@ -114,7 +116,7 @@ public class Arena : MonoBehaviour
 
     private Transform FindField(int x, int y)
     {
-        foreach(var field in _fields)
+        foreach (var field in _fields)
         {
             if (field.name == $"Field_{x}_{y}")
             {
@@ -153,7 +155,7 @@ public class Arena : MonoBehaviour
         {
             for (var y = target.GetY() - 1; y <= target.GetY() + 1; y++)
             {
-                if (FindField(x+1, y+1) && _board[x,y] == null)
+                if (FindField(x + 1, y + 1) && _board[x, y] == null)
                 {
                     var field = FindField(x + 1, y + 1);
                     field.GetComponent<MeshRenderer>().material = _moveableFieldMaterial;
@@ -181,6 +183,10 @@ public class Arena : MonoBehaviour
         if (IsActionRunning() && Input.GetKeyDown(KeyCode.Escape))
         {
             EndAction();
+        } 
+        else if (IsPanelOpen() && Input.GetKeyDown(KeyCode.Escape))
+        {
+            Destroy(_actionPanel);
         }
     }
 
@@ -192,14 +198,14 @@ public class Arena : MonoBehaviour
         _board[_actionTarget.GetX(), _actionTarget.GetY()] = null;
 
         var coordinates = target.name.Replace("Field_", "").Split('_');
-        _board[int.Parse(coordinates[0])-1, int.Parse(coordinates[1])-1] = _actionTarget;
+        _board[int.Parse(coordinates[0]) - 1, int.Parse(coordinates[1]) - 1] = _actionTarget;
 
         EndAction();
     }
 
     private void EndAction()
     {
-        foreach(var field in _fields)
+        foreach (var field in _fields)
         {
             field.GetComponent<MeshRenderer>().material = _defaultFieldMaterial;
             field.GetComponent<Field>().Reset();
@@ -227,9 +233,16 @@ public class Arena : MonoBehaviour
         });
     }
 
-    public void OpenedPanel() => _isPanelOpen = true;
+    public void OpenPanel(Human human) 
+    {
+        _actionPanel = Instantiate(Resources.Load<GameObject>("ActionsPanel"));
+        _actionPanel.transform.SetParent(Game.Instance.GetCanvas());
+        _actionPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
-    public bool IsPanelOpen() => _isPanelOpen;
+        _actionPanel.GetComponent<ActionPanel>().SetHuman(human);
+    }
+
+    public bool IsPanelOpen() => _actionPanel != null;
 
     public void NextTurn()
     {
@@ -238,8 +251,13 @@ public class Arena : MonoBehaviour
             return;
         }
 
+        if (_actionPanel)
+        {
+            Destroy(_actionPanel);
+            _actionPanel = null;
+        }
+
         _yourTurn = false;
-        _isPanelOpen = false;
 
         _infoSprites.ForEach(sprite => Destroy(sprite));
         _infoSprites.Clear();
