@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Arena : MonoBehaviour
 {
@@ -13,18 +14,23 @@ public class Arena : MonoBehaviour
     private int _fieldHeight;
 
     [SerializeField]
-    private GameObject _fightText;
+    private Text _fightText;
 
     private Human[,] _board;
+
+    private bool _yourTurn;
 
     public void StartFight(string[] enemies)
     {
         _board = new Human[_fieldWidth, _fieldHeight];
 
-        _fightText.SetActive(true);
+        _fightText.gameObject.SetActive(true);
 
         SpawnPlayerUnits();
         SpawnEnemyUnits(enemies);
+
+        _yourTurn = Random.Range(0, 100) <= 50;
+        _fightText.text = _yourTurn ? "Your turn!" : "Enemies turn!";
     }
 
     private void SpawnPlayerUnits()

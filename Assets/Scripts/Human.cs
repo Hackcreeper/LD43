@@ -34,6 +34,11 @@ public class Human : MonoBehaviour
             return;
         }
 
+        if (!_agent)
+        {
+            return;
+        }
+
         if (Vector3.Distance(transform.position, _agent.pathEndPosition) < 1.5f)
         {
             _agent.isStopped = true;
