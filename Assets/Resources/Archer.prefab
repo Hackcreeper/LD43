@@ -423,6 +423,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _class: 1
+  _enemy: 0
+  _skillReload: 0
+  _icon: {fileID: 21300000, guid: ceca045e6bb475d4ab88f04cab485e6e, type: 3}
 --- !u!136 &136438474808483816
 CapsuleCollider:
   m_ObjectHideFlags: 1

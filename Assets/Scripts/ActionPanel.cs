@@ -14,10 +14,14 @@ public class ActionPanel : MonoBehaviour
     [SerializeField]
     private Text _skillText;
 
+    [SerializeField]
+    private Image _iconImage;
+
     public void SetUnit(Unit unit)
     {
         _unit = unit;
         _jobText.text = unit.GetClassLabel();
+        _iconImage.sprite = unit.GetIcon();
 
         if (!_unit.IsSkillUnlocked())
         {

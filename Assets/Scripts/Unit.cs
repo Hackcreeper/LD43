@@ -17,6 +17,9 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private int _skillReload;
 
+    [SerializeField]
+    private Sprite _icon;
+
     private bool _skillReady;
 
     private bool _canMakeAction = true;
@@ -204,4 +207,6 @@ public class Unit : MonoBehaviour
     public void UnlockSkill() => _skillUnlocked = true;
 
     public bool IsSkillUnlocked() => _skillUnlocked;
+
+    public Sprite GetIcon() => _icon;
 }
