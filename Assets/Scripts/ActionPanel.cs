@@ -18,4 +18,9 @@ public class ActionPanel : MonoBehaviour
     {
         Arena.Instance.StartMoveAction(_unit);
     }
+
+    public void Attack()
+    {
+        Arena.Instance.StartAttackAction(_unit);
+    }
 }

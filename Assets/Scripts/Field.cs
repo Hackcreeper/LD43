@@ -8,6 +8,9 @@ public class Field : MonoBehaviour
     [SerializeField]
     private Material _moveableMaterial;
 
+    [SerializeField]
+    private Material _attackableMaterial;
+
     private bool _active;
 
     public void Activate(FightAction action)
@@ -17,6 +20,12 @@ public class Field : MonoBehaviour
         if (action == FightAction.Move)
         {
             GetComponent<MeshRenderer>().material = _moveableMaterial;
+            return;
+        }
+
+        if (action == FightAction.Attack)
+        {
+            GetComponent<MeshRenderer>().material = _attackableMaterial;
         }
     }
 

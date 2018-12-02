@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class Arena : MonoBehaviour
@@ -158,6 +159,31 @@ public class Arena : MonoBehaviour
         }
     }
 
+    public void StartAttackAction(Unit unit)
+    {
+        _currentAction = FightAction.Attack;
+        _actionUnit = unit;
+
+        StartAction();
+
+        if (unit.IsEnemy())
+        {
+            return;
+        }
+
+        for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
+        {
+            for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
+            {
+                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && _activeStage.GetBoard()[x, y].IsEnemy())
+                {
+                    var field = FindField(x + 1, y + 1);
+                    field.GetComponent<Field>().Activate(FightAction.Attack);
+                }
+            }
+        }
+    }
+
     private void StartAction()
     {
         _nextButton.SetActive(false);
@@ -201,21 +227,36 @@ public class Arena : MonoBehaviour
 
     public void ClickedField(Field field)
     {
-        _actionUnit.MoveTo(field.transform.position);
+        if (_currentAction == FightAction.Move)
+        {
+            _actionUnit.MoveTo(field.transform.position);
 
-        _activeStage.Set(_actionUnit.GetX(), _actionUnit.GetY(), null);
+            _activeStage.Set(_actionUnit.GetX(), _actionUnit.GetY(), null);
 
-        var coordinates = field.name.Replace("Field_", "").Split('_');
-        var newX = int.Parse(coordinates[0]) - 1;
-        var newY = int.Parse(coordinates[1]) - 1;
+            var coordinates = field.name.Replace("Field_", "").Split('_');
+            var newX = int.Parse(coordinates[0]) - 1;
+            var newY = int.Parse(coordinates[1]) - 1;
 
-        _activeStage.Set(newX, newY, _actionUnit);
+            _activeStage.Set(newX, newY, _actionUnit);
 
-        _actionUnit.SetBoardPosition(newX, newY);
-        _actionUnit.ActionMade();
+            _actionUnit.SetBoardPosition(newX, newY);
+            _actionUnit.ActionMade();
+            return;
+        }
+
+        if (_currentAction == FightAction.Attack)
+        {
+            _actionUnit.MoveToHalfWay(field.transform.position);
+        }
     }
 
     public void DestinationReached() => EndAction();
+
+    public void HalfReached()
+    {
+        _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Hit");
+        _actionUnit.ActionMade();
+    }
 
     public void NextTurn()
     {
