@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Arena : MonoBehaviour
 {
     public static Arena Instance { get; private set; }
 
     private List<Unit> _playerUnits;
-    private List<GameObject> _infoSprites;
+    private List<GameObject> _infoSprites = new List<GameObject>();
 
     private Stage _activeStage;
 
@@ -19,6 +20,12 @@ public class Arena : MonoBehaviour
     [SerializeField]
     private Transform _canvas;
 
+    [SerializeField]
+    private GameObject _nextButton;
+
+    [SerializeField]
+    private Text _turnText;
+
     public const int FIELD_WIDTH = 9;
     public const int FIELD_HEIGHT = 6;
 
@@ -28,6 +35,8 @@ public class Arena : MonoBehaviour
     private GameObject _actionPanel;
 
     private string[][] _stages;
+
+    private bool _playersTurn = true;
 
     public void Start()
     {
@@ -59,7 +68,7 @@ public class Arena : MonoBehaviour
         _activeStage = stage;
         _activeStage.Start();
 
-        ShowInfos();
+        StartTurn();
     }
 
     public Unit[] GetPlayerUnits() => _playerUnits.ToArray();
@@ -86,6 +95,7 @@ public class Arena : MonoBehaviour
         _actionPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
         _actionPanel.GetComponent<ActionPanel>().SetUnit(unit);
+        _nextButton.SetActive(false);
     }
 
     public bool IsPanelOpen() => _actionPanel != null;
@@ -95,6 +105,7 @@ public class Arena : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) && IsPanelOpen())
         {
             Destroy(_actionPanel);
+            _nextButton.SetActive(true);
         }
         else if (Input.GetKeyDown(KeyCode.Escape) && _currentAction != FightAction.None)
         {
@@ -141,6 +152,8 @@ public class Arena : MonoBehaviour
 
     private void StartAction()
     {
+        _nextButton.SetActive(false);
+
         _infoSprites.ForEach(sprite => Destroy(sprite));
         _infoSprites.Clear();
 
@@ -152,6 +165,8 @@ public class Arena : MonoBehaviour
 
     private void EndAction()
     {
+        _nextButton.SetActive(true);
+
         foreach (var field in _fields)
         {
             field.GetComponent<Field>().Deactivate();
@@ -180,4 +195,37 @@ public class Arena : MonoBehaviour
     }
 
     public void DestinationReached() => EndAction();
+
+    public void NextTurn()
+    {
+        _playersTurn = !_playersTurn;
+
+        StartTurn();
+    }
+
+    private void StartTurn()
+    {
+        _nextButton.SetActive(false);
+        _turnText.text = _playersTurn ? "Your turn" : "Enemies turn";
+
+        _infoSprites.ForEach(sprite => Destroy(sprite));
+        _infoSprites.Clear();
+
+        if (_actionPanel)
+        {
+            Destroy(_actionPanel);
+        }
+
+        if (_playersTurn)
+        {
+            _nextButton.SetActive(true);
+            ShowInfos();
+
+            return;
+        }
+
+        Debug.Log("Enemey is on!");
+    }
+
+    public bool IsPlayersTurn() => _playersTurn;
 }

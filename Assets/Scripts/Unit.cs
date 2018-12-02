@@ -11,6 +11,9 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Class _class;
 
+    [SerializeField]
+    private bool _enemy;
+
     private bool _canMakeAction = true;
 
     public void SetBoardPosition(int x, int y)
@@ -31,6 +34,11 @@ public class Unit : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (_enemy)
+        {
+            return;
+        }
+
         if (!_canMakeAction)
         {
             return;
@@ -42,6 +50,11 @@ public class Unit : MonoBehaviour
         }
 
         if (_arena.IsPanelOpen())
+        {
+            return;
+        }
+
+        if (!_arena.IsPlayersTurn())
         {
             return;
         }
