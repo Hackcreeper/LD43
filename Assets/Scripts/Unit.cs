@@ -113,4 +113,11 @@ public class Unit : MonoBehaviour
 
         Arena.Instance.DestinationReached();
     }
+
+    public bool IsEnemy() => _enemy;
+
+    public void Reset()
+    {
+        _canMakeAction = true;
+    }
 }
