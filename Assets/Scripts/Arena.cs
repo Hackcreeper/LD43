@@ -65,6 +65,8 @@ public class Arena : MonoBehaviour
             _playerUnits.Add(component);
             component.SetArena(this);
         }
+
+        _playerUnits[0].UnlockSkill();
     }
 
     private void LoadStage(Stage stage)

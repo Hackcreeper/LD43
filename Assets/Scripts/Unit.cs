@@ -17,11 +17,13 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private int _skillReload;
 
-    private bool _skillReady = false;
+    private bool _skillReady;
 
     private bool _canMakeAction = true;
 
     private int _skillReloadCounter;
+
+    private bool _skillUnlocked;
 
     public void SetBoardPosition(int x, int y)
     {
@@ -198,4 +200,8 @@ public class Unit : MonoBehaviour
         _skillReloadCounter--;
         _skillReady = _skillReloadCounter <= 0;
     }
+
+    public void UnlockSkill() => _skillUnlocked = true;
+
+    public bool IsSkillUnlocked() => _skillUnlocked;
 }

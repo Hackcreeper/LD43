@@ -19,6 +19,12 @@ public class ActionPanel : MonoBehaviour
         _unit = unit;
         _jobText.text = unit.GetClassLabel();
 
+        if (!_unit.IsSkillUnlocked())
+        {
+            _skillButton.gameObject.SetActive(false);
+            return;
+        }
+
         if (!_unit.IsSkillReady())
         {
             _skillButton.interactable = false;
