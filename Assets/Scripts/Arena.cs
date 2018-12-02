@@ -301,6 +301,18 @@ public class Arena : MonoBehaviour
 
         var enemy = _enemyUnitsTodo[Random.Range(0, _enemyUnitsTodo.Count-1)];
 
+        var target = GetAttackTarget(enemy);
+        if (target)
+        {
+            StartAttackAction(enemy);
+
+            _actionUnit.MoveToHalfWay(target.transform.position);
+
+            _enemyUnitsTodo.Remove(enemy);
+
+            return;
+        }
+
         StartMoveAction(enemy);
 
         List<Field> _possibleFields = new List<Field>();
@@ -335,5 +347,29 @@ public class Arena : MonoBehaviour
     public void AddEnemy(Unit enemy)
     {
         _enemyUnits.Add(enemy);
+    }
+
+    private Unit GetAttackTarget(Unit source)
+    {
+        Unit target = null;
+
+        for (var x = source.GetX() - 1; x <= source.GetX() + 1; x++)
+        {
+            for (var y = source.GetY() - 1; y <= source.GetY() + 1; y++)
+            {
+                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && !_activeStage.GetBoard()[x, y].IsEnemy())
+                {
+                    if (!target)
+                    {
+                        target = _activeStage.GetBoard()[x, y];
+                        continue;
+                    }
+
+                    // TODO: Compare health and take lowest health
+                }
+            }
+        }
+
+        return target;
     }
 }
