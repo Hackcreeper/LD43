@@ -37,4 +37,11 @@ public class Stage
             _board[x, y] = unit;
         }
     }
+
+    public Unit[,] GetBoard() => _board;
+
+    public void Set(int x, int y, Unit unit)
+    {
+        _board[x, y] = unit;
+    }
 }

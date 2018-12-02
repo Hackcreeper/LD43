@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 114201358390875050}
   - component: {fileID: 114084853920037008}
   - component: {fileID: 114408665035236804}
-  - component: {fileID: 114414830152974430}
+  - component: {fileID: 114394077642150086}
   m_Layer: 5
   m_Name: ActionsPanel
   m_TagString: Untagged
@@ -448,6 +448,18 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114394077642150086
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1125937523987060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cd00e4fa421c4887a7ab7f6e96d2449, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _jobText: {fileID: 114579924363044280}
 --- !u!114 &114408665035236804
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -462,18 +474,6 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
---- !u!114 &114414830152974430
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1125937523987060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cd00e4fa421c4887a7ab7f6e96d2449, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _job: {fileID: 114579924363044280}
 --- !u!114 &114426010007134096
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -588,7 +588,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114414830152974430}
+      - m_Target: {fileID: 114394077642150086}
         m_MethodName: Move
         m_Mode: 1
         m_Arguments:
