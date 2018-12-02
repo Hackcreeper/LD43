@@ -20,6 +20,9 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Sprite _icon;
 
+    [SerializeField]
+    private Transform _healthbar;
+
     private bool _skillReady;
 
     private bool _canMakeAction = true;
@@ -27,6 +30,12 @@ public class Unit : MonoBehaviour
     private int _skillReloadCounter;
 
     private bool _skillUnlocked;
+
+    private int _health = 100;
+
+    private int _healthToSub = 0;
+
+    private float _subTimer = 0f;
 
     public void SetBoardPosition(int x, int y)
     {
@@ -135,6 +144,22 @@ public class Unit : MonoBehaviour
 
     private void Update()
     {
+        _healthbar.localScale = new Vector3(
+            _health / 100f,
+            _healthbar.localScale.y,
+            _healthbar.localScale.z
+        );
+
+        if (_healthToSub > 0)
+        {
+            _subTimer -= Time.deltaTime;
+            if (_subTimer <= 0f)
+            {
+                _health -= _healthToSub;
+                _healthToSub = 0;
+            }
+        }
+
         if (_originalPosition.HasValue && !_halfDestination.HasValue)
         {
             _moveBackTimer -= Time.deltaTime;
@@ -209,4 +234,16 @@ public class Unit : MonoBehaviour
     public bool IsSkillUnlocked() => _skillUnlocked;
 
     public Sprite GetIcon() => _icon;
+
+    public void SubHealth(int damage, bool delayed)
+    {
+        if (!delayed)
+        {
+            _health -= damage;
+            return;
+        }
+
+        _healthToSub += damage;
+        _subTimer = 1.5f;
+    }
 }

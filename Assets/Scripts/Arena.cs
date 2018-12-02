@@ -255,16 +255,15 @@ public class Arena : MonoBehaviour
 
     public void ClickedField(Field field)
     {
+        var coordinates = field.name.Replace("Field_", "").Split('_');
+        var newX = int.Parse(coordinates[0]) - 1;
+        var newY = int.Parse(coordinates[1]) - 1;
+
         if (_currentAction == FightAction.Move)
         {
             _actionUnit.MoveTo(field.transform.position);
 
             _activeStage.Set(_actionUnit.GetX(), _actionUnit.GetY(), null);
-
-            var coordinates = field.name.Replace("Field_", "").Split('_');
-            var newX = int.Parse(coordinates[0]) - 1;
-            var newY = int.Parse(coordinates[1]) - 1;
-
             _activeStage.Set(newX, newY, _actionUnit);
 
             _actionUnit.SetBoardPosition(newX, newY);
@@ -275,6 +274,8 @@ public class Arena : MonoBehaviour
         if (_currentAction == FightAction.Attack)
         {
             _actionUnit.MoveToHalfWay(field.transform.position);
+            _activeStage.GetBoard()[newX, newY].SubHealth(25, true);
+
             return;
         }
 
@@ -284,6 +285,8 @@ public class Arena : MonoBehaviour
 
             _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Smash");
             _actionUnit.ActionMade();
+
+            _activeStage.GetBoard()[newX, newY].SubHealth(45, true);
 
             _actionUnit.SkillUsed();
 
@@ -353,11 +356,14 @@ public class Arena : MonoBehaviour
 
             _actionUnit.MoveToHalfWay(target.transform.position);
 
+            target.SubHealth(20, true);
+
             _enemyUnitsTodo.Remove(enemy);
 
             return;
         }
 
+        /*
         StartMoveAction(enemy);
 
         List<Field> _possibleFields = new List<Field>();
@@ -383,7 +389,7 @@ public class Arena : MonoBehaviour
 
         _activeStage.Set(newX, newY, enemy);
 
-        enemy.SetBoardPosition(newX, newY);
+        enemy.SetBoardPosition(newX, newY);*/
         _enemyUnitsTodo.Remove(enemy);
     }
 
