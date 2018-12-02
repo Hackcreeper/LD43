@@ -1,4 +1,4 @@
-﻿public enum Classes
+﻿public enum Class
 {
     Swordsman,
 

@@ -3,28 +3,19 @@ using UnityEngine.UI;
 
 public class ActionPanel : MonoBehaviour
 {
-    private Human _human;
+    private Unit _unit;
 
     [SerializeField]
-    private Text _job;
+    private Text _jobText;
 
-    public void SetHuman(Human human)
+    public void SetUnit(Unit unit)
     {
-        _human = human;
-        _job.text = GetClassText(human);
-        // TODO Set name and icon
+        _unit = unit;
+        _jobText.text = unit.GetClassLabel();
     }
 
-    private string GetClassText(Human human)
+    public void Move()
     {
-        switch (human.GetClass())
-        {
-            case Classes.Swordsman:
-                return "Swordsman";
-            case Classes.Archer:
-                return "Archer";
-            default:
-                return "-";
-        }
+        Arena.Instance.StartMoveAction(_unit);
     }
 }

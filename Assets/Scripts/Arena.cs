@@ -1,95 +1,68 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.UI;
 
-public class Arena : MonoBehaviour
+public class Arena : MonoBehaviour 
 {
+    public static Arena Instance { get; private set; }
+
+    private List<Unit> _playerUnits;
+    private List<GameObject> _infoSprites;
+
+    private Stage _activeStage;
+
+    [SerializeField]
+    private string[] _classes;
+
     [SerializeField]
     private GameObject[] _fields;
 
     [SerializeField]
-    private int _fieldWidth;
+    private Transform _canvas;
 
-    [SerializeField]
-    private int _fieldHeight;
+    public const int FIELD_WIDTH = 9;
+    public const int FIELD_HEIGHT = 6;
 
-    [SerializeField]
-    private Text _fightText;
+    private FightAction _currentAction = FightAction.None;
+    private Unit _actionUnit;
 
-    private Human[,] _board;
+    private GameObject _actionPanel;
 
-    private List<Human> _playerUnits = new List<Human>();
-
-    private bool _yourTurn;
-
-    public void StartFight(string[] enemies)
+    public void Start()
     {
-        _playerUnits = new List<Human>();
-        _board = new Human[_fieldWidth, _fieldHeight];
+        Instance = this;
 
-        _fightText.gameObject.SetActive(true);
-
-        SpawnPlayerUnits();
-        SpawnEnemyUnits(enemies);
-
-        _yourTurn = Random.Range(0, 100) <= 50;
-        _fightText.text = _yourTurn ? "Your turn!" : "Enemies turn!";
-
-        StartRound();
+        InitPlayerUnits();
+        LoadStage(new Stage(this));
     }
 
-    private void SpawnPlayerUnits()
+    private void InitPlayerUnits()
     {
-        int playerMin = 0;
-        int playerMax = _fieldWidth / 3;
+        _playerUnits = new List<Unit>();
 
-        foreach(var human in Game.Instance.GetHumans())
+        for (int i = 0; i < 5; i++)
         {
-            var x = 0;
-            var y = 0;
+            var randomClass = _classes[Random.Range(0, _classes.Length)];
+            var unit = Instantiate(Resources.Load<GameObject>(randomClass));
 
-            do
-            {
-                x = Random.Range(playerMin, playerMax);
-                y = Random.Range(0, _fieldHeight);
-            } while (_board[x,y] != null);
-
-            var fighter = Instantiate(Resources.Load<GameObject>(human.GetPrefabName()));
-            fighter.GetComponent<NavMeshAgent>().enabled = false;
-            fighter.transform.position = FindField(x+1, y+1).position;
-
-            _board[x, y] = fighter.GetComponent<Human>();
-            _playerUnits.Add(fighter.GetComponent<Human>());
+            var component = unit.GetComponent<Unit>();
+            _playerUnits.Add(component);
+            component.SetArena(this);
         }
     }
 
-    private void SpawnEnemyUnits(string[] enemies)
+    private void LoadStage(Stage stage)
     {
-        int enemyMin = _fieldWidth - (_fieldWidth / 3);
-        int enemyMax = _fieldWidth - 1;
+        _activeStage = stage;
+        _activeStage.Start();
 
-        foreach(var enemy in enemies)
-        {
-            var x = 0;
-            var y = 0;
-
-            do
-            {
-                x = Random.Range(enemyMin, enemyMax);
-                y = Random.Range(0, _fieldHeight);
-            } while (_board[x, y] != null);
-
-            var fighter = Instantiate(Resources.Load<GameObject>($"Enemies/{enemy}"));
-            fighter.transform.position = FindField(x + 1, y + 1).position;
-            fighter.transform.rotation = Quaternion.Euler(0, 180, 0);
-            _board[x, y] = fighter.GetComponent<Human>();
-        }
+        ShowInfos();
     }
 
-    private Transform FindField(int x, int y)
+    public Unit[] GetPlayerUnits() => _playerUnits.ToArray();
+
+    public Transform FindField(int x, int y)
     {
-        foreach(var field in _fields)
+        foreach (var field in _fields)
         {
             if (field.name == $"Field_{x}_{y}")
             {
@@ -100,17 +73,107 @@ public class Arena : MonoBehaviour
         return null;
     }
 
-    public bool IsPlayerTurn() => _yourTurn;
+    public FightAction GetCurrentAction() => _currentAction;
 
-    private void StartRound()
+    public void OpenActionPanel(Unit unit)
     {
-        if (_yourTurn)
+        _actionPanel = Instantiate(Resources.Load<GameObject>("ActionsPanel"));
+        _actionPanel.transform.SetParent(_canvas);
+        _actionPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+
+        _actionPanel.GetComponent<ActionPanel>().SetUnit(unit);
+    }
+
+    public bool IsPanelOpen() => _actionPanel != null;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && IsPanelOpen())
         {
-            foreach(var unit in _playerUnits)
+            Destroy(_actionPanel);
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && _currentAction != FightAction.None)
+        {
+            EndAction();
+        }
+    }
+
+    private void ShowInfos()
+    {
+        _infoSprites = new List<GameObject>();
+
+        _playerUnits.ForEach(unit =>
+        {
+            if (!unit.CanMakeAction())
             {
-                var info = Instantiate(Resources.Load<GameObject>("Info"));
-                info.transform.position = unit.transform.position + new Vector3(0, 3.6f, 0);
+                return;
+            }
+
+            var info = Instantiate(Resources.Load<GameObject>("Info"));
+            info.transform.position = unit.transform.position + new Vector3(0, 3.6f, 0);
+            _infoSprites.Add(info);
+        });
+    }
+
+    public void StartMoveAction(Unit unit)
+    {
+        _currentAction = FightAction.Move;
+        _actionUnit = unit;
+
+        StartAction();
+
+        for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
+        {
+            for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
+            {
+                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] == null)
+                {
+                    var field = FindField(x + 1, y + 1);
+                    field.GetComponent<Field>().Activate(FightAction.Move);
+                }
             }
         }
     }
+
+    private void StartAction()
+    {
+        _infoSprites.ForEach(sprite => Destroy(sprite));
+        _infoSprites.Clear();
+
+        if (_actionPanel)
+        {
+            Destroy(_actionPanel);
+        }
+    }
+
+    private void EndAction()
+    {
+        foreach(var field in _fields)
+        {
+            field.GetComponent<Field>().Deactivate();
+        }
+
+        ShowInfos();
+
+        _currentAction = FightAction.None;
+        _actionUnit = null;
+    }
+
+    public void ClickedField(Field field)
+    {
+        _actionUnit.MoveTo(field.transform.position);
+
+        _activeStage.Set(_actionUnit.GetX(), _actionUnit.GetY(), null);
+
+        var coordinates = field.name.Replace("Field_", "").Split('_');
+        var newX = int.Parse(coordinates[0]) - 1;
+        var newY = int.Parse(coordinates[1]) - 1;
+
+        _activeStage.Set(newX, newY, _actionUnit);
+
+        _actionUnit.SetBoardPosition(newX, newY);
+        _actionUnit.ActionMade();
+    }
+
+    public void DestinationReached() => EndAction();
 }
