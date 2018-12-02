@@ -566,6 +566,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _jobText: {fileID: 114579924363044280}
+  _skillButton: {fileID: 114268946411487100}
+  _skillText: {fileID: 114322388773056992}
 --- !u!114 &114408665035236804
 MonoBehaviour:
   m_ObjectHideFlags: 1

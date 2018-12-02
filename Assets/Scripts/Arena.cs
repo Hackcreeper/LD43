@@ -283,6 +283,8 @@ public class Arena : MonoBehaviour
             _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Smash");
             _actionUnit.ActionMade();
 
+            _actionUnit.SkillUsed();
+
             EndAction();
         }
     }
@@ -297,6 +299,10 @@ public class Arena : MonoBehaviour
 
     public void NextTurn()
     {
+        if (_playersTurn) { 
+            _playerUnits.ForEach(unit => unit.TurnEnded());
+        }
+
         _playersTurn = !_playersTurn;
 
         StartTurn();

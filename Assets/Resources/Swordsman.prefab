@@ -423,6 +423,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _class: 0
+  _enemy: 0
+  _skillReload: 4
 --- !u!136 &136678140787778068
 CapsuleCollider:
   m_ObjectHideFlags: 1

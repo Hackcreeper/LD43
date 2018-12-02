@@ -14,7 +14,14 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private bool _enemy;
 
+    [SerializeField]
+    private int _skillReload;
+
+    private bool _skillReady = false;
+
     private bool _canMakeAction = true;
+
+    private int _skillReloadCounter;
 
     public void SetBoardPosition(int x, int y)
     {
@@ -31,6 +38,11 @@ public class Unit : MonoBehaviour
     private Vector3? _originalPosition;
 
     private float _moveBackTimer = 0f;
+
+    private void Start()
+    {
+        _skillReloadCounter = _skillReload;
+    }
 
     public void SetArena(Arena arena)
     {
@@ -97,6 +109,12 @@ public class Unit : MonoBehaviour
         GetComponentInChildren<Animator>().SetBool("walking", true);
 
         _destination = destination;
+    }
+
+    public void SkillUsed()
+    {
+        _skillReloadCounter = _skillReload;
+        _skillReady = false;
     }
 
     public void MoveToHalfWay(Vector3 destination)
@@ -167,5 +185,17 @@ public class Unit : MonoBehaviour
     public void Reset()
     {
         _canMakeAction = true;
+    }
+
+    public bool IsSkillReady() => _skillReady;
+
+    public int SkillReadyIn() => _skillReloadCounter;
+
+    public Class GetClass() => _class;
+
+    public void TurnEnded()
+    {
+        _skillReloadCounter--;
+        _skillReady = _skillReloadCounter <= 0;
     }
 }
