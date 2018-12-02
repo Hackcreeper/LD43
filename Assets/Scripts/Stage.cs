@@ -66,6 +66,7 @@ public class Stage
             unitComponent.SetBoardPosition(x, y);
 
             _board[x, y] = unitComponent;
+            _arena.AddEnemy(unitComponent);
         }
     }
 

@@ -9,6 +9,9 @@ public class Arena : MonoBehaviour
     private List<Unit> _playerUnits;
     private List<GameObject> _infoSprites = new List<GameObject>();
 
+    private List<Unit> _enemyUnits = new List<Unit>();
+    private List<Unit> _enemyUnitsTodo = new List<Unit>();
+
     private Stage _activeStage;
 
     [SerializeField]
@@ -137,6 +140,11 @@ public class Arena : MonoBehaviour
 
         StartAction();
 
+        if (unit.IsEnemy())
+        {
+            return;
+        }
+
         for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
         {
             for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
@@ -165,17 +173,30 @@ public class Arena : MonoBehaviour
 
     private void EndAction()
     {
-        _nextButton.SetActive(true);
+        if (_playersTurn)
+        {
+            _nextButton.SetActive(true);
+        }
 
         foreach (var field in _fields)
         {
             field.GetComponent<Field>().Deactivate();
         }
 
-        ShowInfos();
+        if (_playersTurn)
+        {
+            ShowInfos();
+        }
+
+        var unit = _actionUnit;
 
         _currentAction = FightAction.None;
         _actionUnit = null;
+
+        if (unit.IsEnemy())
+        {
+            HandleEnemyTurn();
+        }
     }
 
     public void ClickedField(Field field)
@@ -218,14 +239,60 @@ public class Arena : MonoBehaviour
 
         if (_playersTurn)
         {
+            _playerUnits.ForEach(unit => unit.Reset());
             _nextButton.SetActive(true);
             ShowInfos();
 
             return;
         }
 
-        Debug.Log("Enemey is on!");
+        _enemyUnitsTodo.AddRange(_enemyUnits);
+        HandleEnemyTurn();
+    }
+
+    private void HandleEnemyTurn()
+    {
+        if (_enemyUnitsTodo.Count == 0)
+        {
+            NextTurn();
+            return;
+        }
+
+        var enemy = _enemyUnitsTodo[Random.Range(0, _enemyUnitsTodo.Count-1)];
+
+        StartMoveAction(enemy);
+
+        List<Field> _possibleFields = new List<Field>();
+        for (var x = enemy.GetX() - 1; x <= enemy.GetX() + 1; x++)
+        {
+            for (var y = enemy.GetY() - 1; y <= enemy.GetY() + 1; y++)
+            {
+                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] == null)
+                {
+                    _possibleFields.Add(FindField(x + 1, y + 1).GetComponent<Field>());
+                }
+            }
+        }
+
+        var targetField = _possibleFields[Random.Range(0, _possibleFields.Count - 1)];
+        enemy.MoveTo(targetField.transform.position);
+
+        _activeStage.Set(enemy.GetX(), enemy.GetY(), null);
+
+        var coordinates = targetField.name.Replace("Field_", "").Split('_');
+        var newX = int.Parse(coordinates[0]) - 1;
+        var newY = int.Parse(coordinates[1]) - 1;
+
+        _activeStage.Set(newX, newY, enemy);
+
+        enemy.SetBoardPosition(newX, newY);
+        _enemyUnitsTodo.Remove(enemy);
     }
 
     public bool IsPlayersTurn() => _playersTurn;
+
+    public void AddEnemy(Unit enemy)
+    {
+        _enemyUnits.Add(enemy);
+    }
 }
