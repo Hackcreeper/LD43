@@ -23,4 +23,9 @@ public class ActionPanel : MonoBehaviour
     {
         Arena.Instance.StartAttackAction(_unit);
     }
+
+    public void Skill()
+    {
+        Arena.Instance.StartSmashAttackAction(_unit);
+    }
 }
