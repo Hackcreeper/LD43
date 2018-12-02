@@ -184,6 +184,32 @@ public class Arena : MonoBehaviour
         }
     }
 
+    public void StartSmashAttackAction(Unit unit)
+    {
+        _currentAction = FightAction.SmashAttack;
+        _actionUnit = unit;
+
+        StartAction();
+
+        if (unit.IsEnemy())
+        {
+            return;
+        }
+
+        // TODO: Gleiche Range wie regulärer Angriff?
+        for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
+        {
+            for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
+            {
+                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && _activeStage.GetBoard()[x, y].IsEnemy())
+                {
+                    var field = FindField(x + 1, y + 1);
+                    field.GetComponent<Field>().Activate(FightAction.Attack);
+                }
+            }
+        }
+    }
+
     private void StartAction()
     {
         _nextButton.SetActive(false);
@@ -247,6 +273,17 @@ public class Arena : MonoBehaviour
         if (_currentAction == FightAction.Attack)
         {
             _actionUnit.MoveToHalfWay(field.transform.position);
+            return;
+        }
+
+        if (_currentAction == FightAction.SmashAttack)
+        {
+            _actionUnit.transform.LookAt(field.transform.position);
+
+            _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Smash");
+            _actionUnit.ActionMade();
+
+            EndAction();
         }
     }
 

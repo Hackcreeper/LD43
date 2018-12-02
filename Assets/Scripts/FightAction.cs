@@ -4,5 +4,7 @@
 
     Move,
 
-    Attack
+    Attack,
+
+    SmashAttack
 }
