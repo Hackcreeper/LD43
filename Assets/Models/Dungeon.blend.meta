@@ -8,27 +8,32 @@ ModelImporter:
     100004: Fackel
     100006: Fackel_001
     100008: Fackel_002
+    100010: H_hle
     400000: //RootNode
     400002: Empty
     400004: Fackel
     400006: Fackel_001
     400008: Fackel_002
+    400010: H_hle
     2100000: Material
     2100002: unnamed
     2300000: //RootNode
     2300002: Fackel
     2300004: Fackel_001
     2300006: Fackel_002
+    2300008: H_hle
     3300000: //RootNode
     3300002: Fackel
     3300004: Fackel_001
     3300006: Fackel_002
+    3300008: H_hle
     4300000: H_hle
     4300002: Fackel_002
     4300004: Fackel_001
     4300006: Fackel
     7400000: Default Take
     9500000: //RootNode
+    2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
     importMaterials: 1
