@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4379164019572794}
   - component: {fileID: 137310439181424006}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35,7 +35,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4080718777675626}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bone_005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,7 +50,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4064180682070668}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bone_004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65,7 +65,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4347633474358730}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bone_003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,7 +80,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4868780510140244}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bone_007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4648408967707404}
   - component: {fileID: 137708237808949814}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +111,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4873143290600964}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bone_006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4636265614366600}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bone_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,7 +141,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4808964905666594}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 136924447948643226}
   - component: {fileID: 114262124772532700}
   - component: {fileID: 195400646299635834}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Swordsman
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4855811113726288}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4175585105960492}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bone_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,7 +205,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4281673325880336}
   - component: {fileID: 95064195330303160}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -2,5 +2,7 @@
 {
     None,
 
-    Move
+    Move,
+
+    Attack
 }

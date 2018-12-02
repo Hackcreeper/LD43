@@ -27,6 +27,11 @@ public class Unit : MonoBehaviour
 
     private Vector3? _destination;
 
+    private Vector3? _halfDestination;
+    private Vector3? _originalPosition;
+
+    private float _moveBackTimer = 0f;
+
     public void SetArena(Arena arena)
     {
         _arena = arena;
@@ -86,32 +91,75 @@ public class Unit : MonoBehaviour
 
     public void MoveTo(Vector3 destination)
     {
-        GetComponent<NavMeshAgent>().isStopped = false;
         GetComponent<NavMeshAgent>().destination = destination;
+        GetComponent<NavMeshAgent>().isStopped = false;
 
         GetComponentInChildren<Animator>().SetBool("walking", true);
 
         _destination = destination;
     }
 
+    public void MoveToHalfWay(Vector3 destination)
+    {
+        GetComponent<NavMeshAgent>().isStopped = false;
+        GetComponent<NavMeshAgent>().destination = destination;
+
+        GetComponentInChildren<Animator>().SetBool("walking", true);
+
+        _originalPosition = transform.position;
+        _halfDestination = destination;
+    }
+
     private void Update()
     {
-        if (!_destination.HasValue)
+        if (_originalPosition.HasValue && !_halfDestination.HasValue)
         {
+            _moveBackTimer -= Time.deltaTime;
+
+            if(_moveBackTimer <= 0f)
+            {
+                MoveTo(_originalPosition.Value);
+                _originalPosition = null;
+            }
+
             return;
         }
 
-        if (Vector3.Distance(transform.position, _destination.Value) > 1f)
+        if (_destination.HasValue)
         {
+            if (Vector3.Distance(transform.position, _destination.Value) > .5f)
+            {
+                return;
+            }
+
+            _destination = null;
+            GetComponent<NavMeshAgent>().isStopped = true;
+
+            GetComponentInChildren<Animator>().SetBool("walking", false);
+
+            Arena.Instance.DestinationReached();
             return;
         }
 
-        _destination = null;
-        GetComponent<NavMeshAgent>().isStopped = true;
+        if (_halfDestination.HasValue)
+        {
+            var half = Vector3.Distance(_originalPosition.Value, _halfDestination.Value) / 1.4f;
+            if (Vector3.Distance(transform.position, _halfDestination.Value) > half)
+            {
+                return;
+            }
 
-        GetComponentInChildren<Animator>().SetBool("walking", false);
+            _halfDestination = null;
+            GetComponent<NavMeshAgent>().isStopped = true;
 
-        Arena.Instance.DestinationReached();
+            GetComponentInChildren<Animator>().SetBool("walking", false);
+
+            Arena.Instance.HalfReached();
+
+            _moveBackTimer = 1.5f;
+
+            return;
+        }
     }
 
     public bool IsEnemy() => _enemy;
