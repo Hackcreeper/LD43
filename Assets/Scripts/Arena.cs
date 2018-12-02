@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Arena : MonoBehaviour 
+public class Arena : MonoBehaviour
 {
     public static Arena Instance { get; private set; }
 
@@ -27,12 +27,16 @@ public class Arena : MonoBehaviour
 
     private GameObject _actionPanel;
 
+    private string[][] _stages;
+
     public void Start()
     {
         Instance = this;
+        _stages = new string[1][];
+        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman" };
 
         InitPlayerUnits();
-        LoadStage(new Stage(this));
+        LoadStage(new Stage(this, _stages[0]));
     }
 
     private void InitPlayerUnits()
@@ -148,7 +152,7 @@ public class Arena : MonoBehaviour
 
     private void EndAction()
     {
-        foreach(var field in _fields)
+        foreach (var field in _fields)
         {
             field.GetComponent<Field>().Deactivate();
         }
