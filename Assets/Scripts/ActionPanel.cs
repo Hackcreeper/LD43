@@ -17,11 +17,15 @@ public class ActionPanel : MonoBehaviour
     [SerializeField]
     private Image _iconImage;
 
+    [SerializeField]
+    private Text _attackText;
+
     public void SetUnit(Unit unit)
     {
         _unit = unit;
         _jobText.text = unit.GetClassLabel();
         _iconImage.sprite = unit.GetIcon();
+        _attackText.text = unit.GetClass() == Class.Healer ? "Heal" : "Attack";
 
         if (!_unit.IsSkillUnlocked())
         {
@@ -47,6 +51,10 @@ public class ActionPanel : MonoBehaviour
             case Class.Swordsman:
                 _skillText.text = "Smash Attack";
                 break;
+
+            case Class.Healer:
+                _skillText.text = "Heal all";
+                break;
         }
     }
 
@@ -57,6 +65,12 @@ public class ActionPanel : MonoBehaviour
 
     public void Attack()
     {
+        if (_unit.GetClass() == Class.Healer)
+        {
+            Arena.Instance.StartHealAction(_unit);
+            return;
+        }
+
         Arena.Instance.StartAttackAction(_unit);
     }
 

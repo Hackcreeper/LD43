@@ -46,7 +46,7 @@ public class Field : MonoBehaviour
     {
         _active = true;
 
-        if (action == FightAction.Move)
+        if (action == FightAction.Move || action == FightAction.Heal)
         {
             if (_index == 0)
             {

@@ -340,6 +340,38 @@ public class Arena : MonoBehaviour
         }
     }
 
+    public void StartHealAction(Unit unit)
+    {
+        _currentAction = FightAction.Heal;
+        _actionUnit = unit;
+
+        StartAction();
+
+        if (unit.IsEnemy())
+        {
+            return;
+        }
+
+        const int range = 4;
+
+        for (var x = unit.GetX() - range; x <= unit.GetX() + range; x++)
+        {
+            for (var y = unit.GetY() - range; y <= unit.GetY() + range; y++)
+            {
+                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && !_activeStage.GetBoard()[x, y].IsEnemy())
+                {
+                    var field = FindField(x + 1, y + 1);
+                    field.GetComponent<Field>().Activate(FightAction.Heal);
+                }
+            }
+        }
+
+        _playerUnits.ForEach(player =>
+        {
+            player.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+        });
+    }
+
     private void StartAction()
     {
         _nextButton.SetActive(false);
@@ -369,6 +401,11 @@ public class Arena : MonoBehaviour
         {
             ShowInfos();
         }
+
+        _playerUnits.ForEach(player =>
+        {
+            player.gameObject.layer = LayerMask.NameToLayer("Default");
+        });
 
         var unit = _actionUnit;
 
@@ -494,6 +531,18 @@ public class Arena : MonoBehaviour
             _arrowSpawnAmount = 4;
 
             return;
+        }
+
+        if (_currentAction == FightAction.Heal)
+        {
+            _actionUnit.transform.LookAt(field.transform.position);
+
+            _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Hit");
+
+            _activeStage.Get(newX, newY).SubHealth(-20, false);
+
+            _actionUnit.ActionMade();
+            EndAction();
         }
     }
 
