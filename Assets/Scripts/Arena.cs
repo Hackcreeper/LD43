@@ -641,6 +641,7 @@ public class Arena : MonoBehaviour
     private Unit GetAttackTarget(Unit source)
     {
         Unit target = null;
+        int lastHealth = int.MaxValue;
 
         for (var x = source.GetX() - 1; x <= source.GetX() + 1; x++)
         {
@@ -648,13 +649,11 @@ public class Arena : MonoBehaviour
             {
                 if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && !_activeStage.GetBoard()[x, y].IsEnemy())
                 {
-                    if (!target)
+                    if (_activeStage.Get(x, y).GetHealth() < lastHealth)
                     {
                         target = _activeStage.GetBoard()[x, y];
-                        continue;
+                        lastHealth = _activeStage.Get(x, y).GetHealth();
                     }
-
-                    // TODO: Compare health and take lowest health
                 }
             }
         }

@@ -258,4 +258,6 @@ public class Unit : MonoBehaviour
     }
 
     public void RegisterOnDie(Action<Unit> action) => _onDie = action;
+
+    public int GetHealth() => _health;
 }
