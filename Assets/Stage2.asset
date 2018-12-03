@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a3bdb2cd68f901469e7cc149151eb49, type: 3}
-  m_Name: Stage1
+  m_Name: Stage2
   m_EditorClassIdentifier: 
   debugViews:
     m_Enabled: 1
@@ -42,7 +42,7 @@ MonoBehaviour:
   ambientOcclusion:
     m_Enabled: 1
     m_Settings:
-      intensity: 4
+      intensity: 1.93
       radius: 0.1
       sampleCount: 6
       downsampling: 1
@@ -71,11 +71,11 @@ MonoBehaviour:
   depthOfField:
     m_Enabled: 0
     m_Settings:
-      focusDistance: 0.23
-      aperture: 20.8
-      focalLength: 24
+      focusDistance: 4
+      aperture: 18.1
+      focalLength: 109
       useCameraFov: 0
-      kernelSize: 1
+      kernelSize: 2
   motionBlur:
     m_Enabled: 0
     m_Settings:
@@ -113,19 +113,19 @@ MonoBehaviour:
     m_Settings:
       tonemapping:
         tonemapper: 2
-        neutralBlackIn: 0.0252
-        neutralWhiteIn: 11.33
-        neutralBlackOut: -0.0341
-        neutralWhiteOut: 11.61
+        neutralBlackIn: 0.023
+        neutralWhiteIn: 9
+        neutralBlackOut: -0.038
+        neutralWhiteOut: 15.6
         neutralWhiteLevel: 6.27
         neutralWhiteClip: 10
       basic:
         postExposure: 0
-        temperature: 69
+        temperature: -21
         tint: 0
         hueShift: 0
-        saturation: 1.034
-        contrast: 0.462
+        saturation: 0.84
+        contrast: 0.67
       channelMixer:
         red: {x: 1, y: 0, z: 0}
         green: {x: 0, y: 1, z: 0}
@@ -303,12 +303,12 @@ MonoBehaviour:
     m_Enabled: 0
     m_Settings:
       lut: {fileID: 0}
-      contribution: 1
+      contribution: 0
   chromaticAberration:
     m_Enabled: 0
     m_Settings:
-      spectralTexture: {fileID: 0}
-      intensity: 0.1
+      spectralTexture: {fileID: 2800000, guid: b17e469d6dff7434eb2e800b2f03d7bb, type: 3}
+      intensity: 1
   grain:
     m_Enabled: 0
     m_Settings:

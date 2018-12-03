@@ -34,7 +34,7 @@ public class Unit : MonoBehaviour
 
     private bool _skillUnlocked = true;
 
-    private int _health = 100;
+    private int _health = 21;
 
     private int _healthToSub = 0;
 
