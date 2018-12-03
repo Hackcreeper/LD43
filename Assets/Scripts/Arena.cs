@@ -55,11 +55,13 @@ public class Arena : MonoBehaviour
     private Field _clickedField;
     private int _arrowSpawnAmount = 0;
 
+    private float? _endActionTimer = null;
+
     public void Start()
     {
         Instance = this;
         _stages = new string[4][];
-        _stages[0] = new string[] { "Swordsman", };
+        _stages[0] = new string[] { "Swordsman", "Healer", "Healer" };
         _stages[1] = new string[] { "Archer", };
         _stages[2] = new string[] { "Archer", };
         _stages[3] = new string[] { "Swordsman", };
@@ -140,6 +142,17 @@ public class Arena : MonoBehaviour
 
     private void Update()
     {
+        if (_endActionTimer.HasValue)
+        {
+            _endActionTimer -= Time.deltaTime;
+
+            if (_endActionTimer <= 0)
+            {
+                _endActionTimer = null;
+                EndAction();
+            }
+        }
+
         if (_arrowShouldSpawn)
         {
             _arrowTimer -= Time.deltaTime;
@@ -653,6 +666,22 @@ public class Arena : MonoBehaviour
 
                 return;
             }
+
+            if (enemy.GetClass() == Class.Healer)
+            {
+                StartHealAction(enemy);
+                _enemyUnitsTodo.Remove(enemy);
+
+                _actionUnit.transform.LookAt(target.transform.position);
+
+                _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Hit");
+
+                _activeStage.Get(target.GetX(), target.GetY()).SubHealth(-15, false);
+
+                _endActionTimer = 2f;
+
+                return;
+            }
         }
 
         StartMoveAction(enemy);
@@ -660,13 +689,29 @@ public class Arena : MonoBehaviour
         var lastDistance = float.MaxValue;
         Unit targetUnit = null;
 
-        foreach(var unit in _playerUnits)
+        var lastHealth = int.MaxValue;
+
+        if (enemy.GetClass() == Class.Healer)
         {
-            var distance = Vector3.Distance(enemy.transform.position, unit.transform.position);
-            if (distance < lastDistance)
+            foreach (var unit in _enemyUnits)
             {
-                lastDistance = distance;
-                targetUnit = unit;
+                if (unit.GetHealth() < lastHealth)
+                {
+                    lastHealth = unit.GetHealth();
+                    targetUnit = unit;
+                }
+            }
+        }
+        else
+        {
+            foreach (var unit in _playerUnits)
+            {
+                var distance = Vector3.Distance(enemy.transform.position, unit.transform.position);
+                if (distance < lastDistance)
+                {
+                    lastDistance = distance;
+                    targetUnit = unit;
+                }
             }
         }
 
@@ -758,6 +803,30 @@ public class Arena : MonoBehaviour
                 {
                     if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && !_activeStage.GetBoard()[x, y].IsEnemy())
                     {
+                        if (_activeStage.Get(x, y).GetHealth() < lastHealth)
+                        {
+                            target = _activeStage.GetBoard()[x, y];
+                            lastHealth = _activeStage.Get(x, y).GetHealth();
+                        }
+                    }
+                }
+            }
+        }
+        else if (source.GetClass() == Class.Healer)
+        {
+            const int range = 4;
+
+            for (var x = source.GetX() - range; x <= source.GetX() + range; x++)
+            {
+                for (var y = source.GetY() - range; y <= source.GetY() + range; y++)
+                {
+                    if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && _activeStage.GetBoard()[x, y].IsEnemy())
+                    {
+                        if (_activeStage.Get(x, y).GetHealth() >= 100)
+                        {
+                            continue;
+                        }
+
                         if (_activeStage.Get(x, y).GetHealth() < lastHealth)
                         {
                             target = _activeStage.GetBoard()[x, y];
