@@ -19,6 +19,7 @@ ModelImporter:
     100026: Bow
     100028: Bow_
     100030: Prefab
+    100032: Rod
     400000: Armature
     400002: Bone
     400004: Bone_001
@@ -35,6 +36,7 @@ ModelImporter:
     400026: Bow
     400028: Bow_
     400030: Prefab
+    400032: Rod
     2100000: Material
     2100002: Material__Material_Base_Color_png
     4300000: Cube
@@ -43,6 +45,7 @@ ModelImporter:
     4300006: Bow
     4300008: Prefab
     4300010: Bow_
+    4300012: Rod
     7400000: Idle
     7400002: ArmatureAction
     7400004: Walk
@@ -58,6 +61,7 @@ ModelImporter:
     13700006: Bow
     13700008: Bow_
     13700010: Prefab
+    13700012: Rod
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
