@@ -23,7 +23,7 @@ public class Field : MonoBehaviour
             return;
         }
 
-        if (action == FightAction.Attack)
+        if (action == FightAction.Attack || action == FightAction.RapidFire)
         {
             GetComponent<MeshRenderer>().material = _attackableMaterial;
         }

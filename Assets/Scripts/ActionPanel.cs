@@ -62,6 +62,16 @@ public class ActionPanel : MonoBehaviour
 
     public void Skill()
     {
-        Arena.Instance.StartSmashAttackAction(_unit);
+        if (_unit.GetClass() == Class.Swordsman)
+        {
+            Arena.Instance.StartSmashAttackAction(_unit);
+            return;
+        }
+
+        if (_unit.GetClass() == Class.Archer)
+        {
+            Arena.Instance.StartRapidFireAction(_unit);
+            return;
+        }
     }
 }

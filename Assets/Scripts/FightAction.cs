@@ -6,5 +6,7 @@
 
     Attack,
 
-    SmashAttack
+    SmashAttack,
+
+    RapidFire
 }
