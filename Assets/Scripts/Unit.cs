@@ -14,7 +14,28 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private bool _enemy;
 
+    [SerializeField]
+    private int _skillReload;
+
+    [SerializeField]
+    private Sprite _icon;
+
+    [SerializeField]
+    private Transform _healthbar;
+
+    private bool _skillReady;
+
     private bool _canMakeAction = true;
+
+    private int _skillReloadCounter;
+
+    private bool _skillUnlocked = true;
+
+    private int _health = 100;
+
+    private int _healthToSub = 0;
+
+    private float _subTimer = 0f;
 
     public void SetBoardPosition(int x, int y)
     {
@@ -31,6 +52,11 @@ public class Unit : MonoBehaviour
     private Vector3? _originalPosition;
 
     private float _moveBackTimer = 0f;
+
+    private void Start()
+    {
+        _skillReloadCounter = _skillReload;
+    }
 
     public void SetArena(Arena arena)
     {
@@ -99,6 +125,12 @@ public class Unit : MonoBehaviour
         _destination = destination;
     }
 
+    public void SkillUsed()
+    {
+        _skillReloadCounter = _skillReload;
+        _skillReady = false;
+    }
+
     public void MoveToHalfWay(Vector3 destination)
     {
         GetComponent<NavMeshAgent>().isStopped = false;
@@ -112,6 +144,22 @@ public class Unit : MonoBehaviour
 
     private void Update()
     {
+        _healthbar.localScale = new Vector3(
+            _health / 100f,
+            _healthbar.localScale.y,
+            _healthbar.localScale.z
+        );
+
+        if (_healthToSub > 0)
+        {
+            _subTimer -= Time.deltaTime;
+            if (_subTimer <= 0f)
+            {
+                _health -= _healthToSub;
+                _healthToSub = 0;
+            }
+        }
+
         if (_originalPosition.HasValue && !_halfDestination.HasValue)
         {
             _moveBackTimer -= Time.deltaTime;
@@ -167,5 +215,35 @@ public class Unit : MonoBehaviour
     public void Reset()
     {
         _canMakeAction = true;
+    }
+
+    public bool IsSkillReady() => _skillReady;
+
+    public int SkillReadyIn() => _skillReloadCounter;
+
+    public Class GetClass() => _class;
+
+    public void TurnEnded()
+    {
+        _skillReloadCounter--;
+        _skillReady = _skillReloadCounter <= 0;
+    }
+
+    public void UnlockSkill() => _skillUnlocked = true;
+
+    public bool IsSkillUnlocked() => _skillUnlocked;
+
+    public Sprite GetIcon() => _icon;
+
+    public void SubHealth(int damage, bool delayed)
+    {
+        if (!delayed)
+        {
+            _health -= damage;
+            return;
+        }
+
+        _healthToSub += damage;
+        _subTimer = 1.5f;
     }
 }

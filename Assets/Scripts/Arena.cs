@@ -46,7 +46,7 @@ public class Arena : MonoBehaviour
     {
         Instance = this;
         _stages = new string[1][];
-        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman" };
+        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman", "Archer", "Swordsman", "Swordsman", "Archer" };
 
         InitPlayerUnits();
         LoadStage(new Stage(this, _stages[0]));
@@ -65,6 +65,8 @@ public class Arena : MonoBehaviour
             _playerUnits.Add(component);
             component.SetArena(this);
         }
+
+        _playerUnits[0].UnlockSkill();
     }
 
     private void LoadStage(Stage stage)
@@ -196,13 +198,17 @@ public class Arena : MonoBehaviour
             return;
         }
 
-        // TODO: Gleiche Range wie regulärer Angriff?
         for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
         {
             for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
             {
                 if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && _activeStage.GetBoard()[x, y].IsEnemy())
                 {
+                    if (x != unit.GetX() && y != unit.GetY())
+                    {
+                        continue;
+                    }
+
                     var field = FindField(x + 1, y + 1);
                     field.GetComponent<Field>().Activate(FightAction.Attack);
                 }
@@ -253,16 +259,15 @@ public class Arena : MonoBehaviour
 
     public void ClickedField(Field field)
     {
+        var coordinates = field.name.Replace("Field_", "").Split('_');
+        var newX = int.Parse(coordinates[0]) - 1;
+        var newY = int.Parse(coordinates[1]) - 1;
+
         if (_currentAction == FightAction.Move)
         {
             _actionUnit.MoveTo(field.transform.position);
 
             _activeStage.Set(_actionUnit.GetX(), _actionUnit.GetY(), null);
-
-            var coordinates = field.name.Replace("Field_", "").Split('_');
-            var newX = int.Parse(coordinates[0]) - 1;
-            var newY = int.Parse(coordinates[1]) - 1;
-
             _activeStage.Set(newX, newY, _actionUnit);
 
             _actionUnit.SetBoardPosition(newX, newY);
@@ -273,6 +278,8 @@ public class Arena : MonoBehaviour
         if (_currentAction == FightAction.Attack)
         {
             _actionUnit.MoveToHalfWay(field.transform.position);
+            _activeStage.GetBoard()[newX, newY].SubHealth(25, true);
+
             return;
         }
 
@@ -282,6 +289,50 @@ public class Arena : MonoBehaviour
 
             _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Smash");
             _actionUnit.ActionMade();
+
+            if (newX == _actionUnit.GetX() && newY > _actionUnit.GetY())
+            {
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX(), _actionUnit.GetY() + 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() + 2)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX(), _actionUnit.GetY() + 2)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() + 2)?.SubHealth(40, true);
+
+            }
+            else if (newX == _actionUnit.GetX() && newY < _actionUnit.GetY())
+            {
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX(), _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() - 2)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX(), _actionUnit.GetY() - 2)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() - 2)?.SubHealth(40, true);
+            }
+            else if (newY == _actionUnit.GetY() && newX > _actionUnit.GetX())
+            {
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY())?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+
+                _activeStage.Get(_actionUnit.GetX() + 2, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 2, _actionUnit.GetY())?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 2, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+            }
+            else if (newY == _actionUnit.GetY() && newX < _actionUnit.GetX())
+            {
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY())?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+
+                _activeStage.Get(_actionUnit.GetX() - 2, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() - 2, _actionUnit.GetY())?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() - 2, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+            }
+
+            _actionUnit.SkillUsed();
 
             EndAction();
         }
@@ -297,6 +348,10 @@ public class Arena : MonoBehaviour
 
     public void NextTurn()
     {
+        if (_playersTurn) { 
+            _playerUnits.ForEach(unit => unit.TurnEnded());
+        }
+
         _playersTurn = !_playersTurn;
 
         StartTurn();
@@ -330,7 +385,7 @@ public class Arena : MonoBehaviour
 
     private void HandleEnemyTurn()
     {
-        if (_enemyUnitsTodo.Count == 0)
+        if (_enemyUnitsTodo.Count == 0 || true)
         {
             NextTurn();
             return;
@@ -344,6 +399,8 @@ public class Arena : MonoBehaviour
             StartAttackAction(enemy);
 
             _actionUnit.MoveToHalfWay(target.transform.position);
+
+            target.SubHealth(20, true);
 
             _enemyUnitsTodo.Remove(enemy);
 
@@ -376,7 +433,9 @@ public class Arena : MonoBehaviour
         _activeStage.Set(newX, newY, enemy);
 
         enemy.SetBoardPosition(newX, newY);
+
         _enemyUnitsTodo.Remove(enemy);
+        EndAction();
     }
 
     public bool IsPlayersTurn() => _playersTurn;
