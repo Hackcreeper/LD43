@@ -59,7 +59,7 @@ public class Arena : MonoBehaviour
     {
         Instance = this;
         _stages = new string[4][];
-        _stages[0] = new string[] { "Swordsman" };
+        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman" };
         _stages[1] = new string[] { "Archer", };
         _stages[2] = new string[] { "Archer", };
         _stages[3] = new string[] { "Swordsman", };
@@ -568,25 +568,51 @@ public class Arena : MonoBehaviour
 
         StartMoveAction(enemy);
 
-        List<Field> _possibleFields = new List<Field>();
-        for (var x = enemy.GetX() - 1; x <= enemy.GetX() + 1; x++)
+        var lastDistance = float.MaxValue;
+        Unit targetUnit = null;
+
+        foreach(var unit in _playerUnits)
         {
-            for (var y = enemy.GetY() - 1; y <= enemy.GetY() + 1; y++)
+            var distance = Vector3.Distance(enemy.transform.position, unit.transform.position);
+            if (distance < lastDistance)
             {
-                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] == null)
-                {
-                    _possibleFields.Add(FindField(x + 1, y + 1).GetComponent<Field>());
-                }
+                lastDistance = distance;
+                targetUnit = unit;
             }
         }
 
-        var targetField = _possibleFields[Random.Range(0, _possibleFields.Count - 1)];
+        var targetX = enemy.GetX();
+        var targetY = enemy.GetY();
 
-        enemy.MoveTo(targetField.transform.position);
+        if (targetUnit.GetX() < enemy.GetX())
+        {
+            targetX--;
+        }
+        else if (targetUnit.GetX() > enemy.GetX())
+        {
+            targetX++;
+        }
 
+        if (targetUnit.GetY() < enemy.GetY())
+        {
+            targetY--;
+        }
+        else if (targetUnit.GetY() > enemy.GetY())
+        {
+            targetY++;
+        }
+
+        if (_activeStage.Get(targetX, targetY))
+        {
+            _enemyUnitsTodo.Remove(enemy);
+            EndAction();
+            return;
+        }
+
+        enemy.MoveTo(FindField(targetX + 1, targetY + 1).transform.position);
         _activeStage.Set(enemy.GetX(), enemy.GetY(), null);
 
-        var coordinates = targetField.name.Replace("Field_", "").Split('_');
+        var coordinates = FindField(targetX + 1, targetY + 1).name.Replace("Field_", "").Split('_');
         var newX = int.Parse(coordinates[0]) - 1;
         var newY = int.Parse(coordinates[1]) - 1;
 
