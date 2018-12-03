@@ -6,12 +6,15 @@ public class Stage
 
     private readonly string[] _enemies;
 
+    private readonly int _index;
+
     private readonly Unit[,] _board = new Unit[Arena.FIELD_WIDTH,Arena.FIELD_HEIGHT];
 
-    public Stage(Arena arena, string[] enemies)
+    public Stage(Arena arena, string[] enemies, int index)
     {
         _arena = arena;
         _enemies = enemies;
+        _index = index;
     }
 
     public void Start()
@@ -86,4 +89,6 @@ public class Stage
 
         return _board[x, y];
     }
+
+    public int GetIndex() => _index;
 }

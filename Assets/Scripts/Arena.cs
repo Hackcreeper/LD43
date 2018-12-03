@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -31,6 +32,12 @@ public class Arena : MonoBehaviour
     [SerializeField]
     private Text _turnText;
 
+    [SerializeField]
+    private PostProcessingBehaviour _cameraShader;
+
+    [SerializeField]
+    private PostProcessingProfile[] _shaderProfiles;
+
     public const int FIELD_WIDTH = 9;
     public const int FIELD_HEIGHT = 6;
 
@@ -51,11 +58,14 @@ public class Arena : MonoBehaviour
     public void Start()
     {
         Instance = this;
-        _stages = new string[1][];
+        _stages = new string[4][];
         _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman" };
+        _stages[1] = new string[] { "Archer", };
+        _stages[2] = new string[] { "Archer", };
+        _stages[3] = new string[] { "Swordsman", };
 
         InitPlayerUnits();
-        LoadStage(new Stage(this, _stages[0]));
+        LoadStage(new Stage(this, _stages[0], 0));
     }
 
     private void InitPlayerUnits()
@@ -88,6 +98,13 @@ public class Arena : MonoBehaviour
     {
         _activeStage = stage;
         _activeStage.Start();
+
+        _cameraShader.profile = _shaderProfiles[_activeStage.GetIndex()];
+
+        foreach (var field in _fields)
+        {
+            field.GetComponent<Field>().SetIndex(stage.GetIndex());
+        }
 
         StartTurn();
     }
@@ -551,25 +568,51 @@ public class Arena : MonoBehaviour
 
         StartMoveAction(enemy);
 
-        List<Field> _possibleFields = new List<Field>();
-        for (var x = enemy.GetX() - 1; x <= enemy.GetX() + 1; x++)
+        var lastDistance = float.MaxValue;
+        Unit targetUnit = null;
+
+        foreach(var unit in _playerUnits)
         {
-            for (var y = enemy.GetY() - 1; y <= enemy.GetY() + 1; y++)
+            var distance = Vector3.Distance(enemy.transform.position, unit.transform.position);
+            if (distance < lastDistance)
             {
-                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] == null)
-                {
-                    _possibleFields.Add(FindField(x + 1, y + 1).GetComponent<Field>());
-                }
+                lastDistance = distance;
+                targetUnit = unit;
             }
         }
 
-        var targetField = _possibleFields[Random.Range(0, _possibleFields.Count - 1)];
+        var targetX = enemy.GetX();
+        var targetY = enemy.GetY();
 
-        enemy.MoveTo(targetField.transform.position);
+        if (targetUnit.GetX() < enemy.GetX())
+        {
+            targetX--;
+        }
+        else if (targetUnit.GetX() > enemy.GetX())
+        {
+            targetX++;
+        }
 
+        if (targetUnit.GetY() < enemy.GetY())
+        {
+            targetY--;
+        }
+        else if (targetUnit.GetY() > enemy.GetY())
+        {
+            targetY++;
+        }
+
+        if (_activeStage.Get(targetX, targetY))
+        {
+            _enemyUnitsTodo.Remove(enemy);
+            EndAction();
+            return;
+        }
+
+        enemy.MoveTo(FindField(targetX + 1, targetY + 1).transform.position);
         _activeStage.Set(enemy.GetX(), enemy.GetY(), null);
 
-        var coordinates = targetField.name.Replace("Field_", "").Split('_');
+        var coordinates = FindField(targetX + 1, targetY + 1).name.Replace("Field_", "").Split('_');
         var newX = int.Parse(coordinates[0]) - 1;
         var newY = int.Parse(coordinates[1]) - 1;
 
@@ -590,9 +633,7 @@ public class Arena : MonoBehaviour
 
             if (_enemyUnits.Count <= 0)
             {
-                // game win :-3 
-                // go to the next stage
-                Debug.Log("Next stage!");
+                LoadStage(new Stage(this, _stages[_activeStage.GetIndex()+1], _activeStage.GetIndex() + 1));
             }
         });
     }
@@ -600,6 +641,7 @@ public class Arena : MonoBehaviour
     private Unit GetAttackTarget(Unit source)
     {
         Unit target = null;
+        int lastHealth = int.MaxValue;
 
         for (var x = source.GetX() - 1; x <= source.GetX() + 1; x++)
         {
@@ -607,13 +649,11 @@ public class Arena : MonoBehaviour
             {
                 if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && !_activeStage.GetBoard()[x, y].IsEnemy())
                 {
-                    if (!target)
+                    if (_activeStage.Get(x, y).GetHealth() < lastHealth)
                     {
                         target = _activeStage.GetBoard()[x, y];
-                        continue;
+                        lastHealth = _activeStage.Get(x, y).GetHealth();
                     }
-
-                    // TODO: Compare health and take lowest health
                 }
             }
         }
