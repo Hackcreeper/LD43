@@ -10,5 +10,7 @@
 
     RapidFire,
 
-    Heal
+    Heal,
+
+    HealAll,
 }

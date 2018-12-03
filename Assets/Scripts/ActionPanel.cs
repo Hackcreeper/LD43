@@ -87,5 +87,11 @@ public class ActionPanel : MonoBehaviour
             Arena.Instance.StartRapidFireAction(_unit);
             return;
         }
+
+        if (_unit.GetClass() == Class.Healer)
+        {
+            Arena.Instance.StartHealAllAction(_unit);
+            return;
+        }
     }
 }

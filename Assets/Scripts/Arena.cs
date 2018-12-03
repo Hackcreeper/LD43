@@ -372,6 +372,26 @@ public class Arena : MonoBehaviour
         });
     }
 
+    public void StartHealAllAction(Unit unit)
+    {
+        _currentAction = FightAction.HealAll;
+        _actionUnit = unit;
+
+        StartAction();
+
+        unit.GetComponentInChildren<Animator>().Play("Healer_HealAll");
+
+        _playerUnits.ForEach(player =>
+        {
+            player.SubHealth(-25, true);
+        });
+
+        _actionUnit.SkillUsed();
+        _actionUnit.ActionMade();
+
+        EndAction();
+    }
+
     private void StartAction()
     {
         _nextButton.SetActive(false);
