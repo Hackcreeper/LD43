@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Arena : MonoBehaviour
@@ -46,7 +47,7 @@ public class Arena : MonoBehaviour
     {
         Instance = this;
         _stages = new string[1][];
-        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman", "Archer", "Swordsman", "Swordsman", "Archer" };
+        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman" };
 
         InitPlayerUnits();
         LoadStage(new Stage(this, _stages[0]));
@@ -56,7 +57,7 @@ public class Arena : MonoBehaviour
     {
         _playerUnits = new List<Unit>();
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 1; i++)
         {
             var randomClass = _classes[Random.Range(0, _classes.Length)];
             var unit = Instantiate(Resources.Load<GameObject>(randomClass));
@@ -64,6 +65,15 @@ public class Arena : MonoBehaviour
             var component = unit.GetComponent<Unit>();
             _playerUnits.Add(component);
             component.SetArena(this);
+            component.RegisterOnDie((deadUnit) =>
+            {
+                _playerUnits.Remove(deadUnit);
+
+                if (_playerUnits.Count <= 0)
+                {
+                    SceneManager.LoadScene("GameOver");
+                }
+            });
         }
 
         _playerUnits[0].UnlockSkill();
@@ -385,7 +395,7 @@ public class Arena : MonoBehaviour
 
     private void HandleEnemyTurn()
     {
-        if (_enemyUnitsTodo.Count == 0 || true)
+        if (_enemyUnitsTodo.Count == 0)
         {
             NextTurn();
             return;
@@ -422,6 +432,7 @@ public class Arena : MonoBehaviour
         }
 
         var targetField = _possibleFields[Random.Range(0, _possibleFields.Count - 1)];
+
         enemy.MoveTo(targetField.transform.position);
 
         _activeStage.Set(enemy.GetX(), enemy.GetY(), null);
@@ -433,9 +444,7 @@ public class Arena : MonoBehaviour
         _activeStage.Set(newX, newY, enemy);
 
         enemy.SetBoardPosition(newX, newY);
-
         _enemyUnitsTodo.Remove(enemy);
-        EndAction();
     }
 
     public bool IsPlayersTurn() => _playersTurn;
@@ -443,6 +452,17 @@ public class Arena : MonoBehaviour
     public void AddEnemy(Unit enemy)
     {
         _enemyUnits.Add(enemy);
+        enemy.RegisterOnDie(unit =>
+        {
+            _enemyUnits.Remove(unit);
+
+            if (_enemyUnits.Count <= 0)
+            {
+                // game win :-3 
+                // go to the next stage
+                Debug.Log("Next stage!");
+            }
+        });
     }
 
     private Unit GetAttackTarget(Unit source)

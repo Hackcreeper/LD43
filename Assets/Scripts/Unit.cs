@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
@@ -23,15 +24,17 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Transform _healthbar;
 
+    private Action<Unit> _onDie;
+
     private bool _skillReady;
 
     private bool _canMakeAction = true;
 
     private int _skillReloadCounter;
 
-    private bool _skillUnlocked = true;
+    private bool _skillUnlocked;
 
-    private int _health = 100;
+    private int _health = 1;
 
     private int _healthToSub = 0;
 
@@ -160,6 +163,13 @@ public class Unit : MonoBehaviour
             }
         }
 
+        if (_health <= 0)
+        {
+            _onDie?.Invoke(this);
+            Destroy(gameObject);
+            return;
+        }
+
         if (_originalPosition.HasValue && !_halfDestination.HasValue)
         {
             _moveBackTimer -= Time.deltaTime;
@@ -246,4 +256,6 @@ public class Unit : MonoBehaviour
         _healthToSub += damage;
         _subTimer = 1.5f;
     }
+
+    public void RegisterOnDie(Action<Unit> action) => _onDie = action;
 }
