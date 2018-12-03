@@ -1,22 +1,22 @@
 fileFormatVersion: 2
-guid: 5d9a076d0fd2944b6ba53ea960b07321
+guid: a2a3c23efd4f04ad89a63a433a23ebe5
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
-  fontSize: 300
+  fontSize: 16
   forceTextureCase: -2
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Sedgwick Ave
+  fontName: Bloodgutter 2000
   fontNames:
-  - Sedgwick Ave
+  - Bloodgutter 2000
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
   useLegacyBoundsCalculation: 0
-  shouldRoundAdvanceValue: 0
+  shouldRoundAdvanceValue: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 
