@@ -265,7 +265,7 @@ public class Arena : MonoBehaviour
 
         if (unit.GetClass() == Class.Archer)
         {
-            const int range = 5;
+            const int range = 4;
 
             for (var x = unit.GetX() - range; x <= unit.GetX() + range; x++)
             {
@@ -555,15 +555,35 @@ public class Arena : MonoBehaviour
         var target = GetAttackTarget(enemy);
         if (target)
         {
-            StartAttackAction(enemy);
+            if (enemy.GetClass() == Class.Swordsman)
+            {
+                StartAttackAction(enemy);
 
-            _actionUnit.MoveToHalfWay(target.transform.position);
+                _actionUnit.MoveToHalfWay(target.transform.position);
 
-            target.SubHealth(20, true);
+                target.SubHealth(20, true);
 
-            _enemyUnitsTodo.Remove(enemy);
+                _enemyUnitsTodo.Remove(enemy);
 
-            return;
+                return;
+            }
+
+            if (enemy.GetClass() == Class.Archer)
+            {
+                StartAttackAction(enemy);
+                _enemyUnitsTodo.Remove(enemy);
+
+                _actionUnit.transform.LookAt(target.transform.position);
+
+                _actionUnit.GetComponentInChildren<Animator>().Play("Archer_Shot");
+
+                _arrowShouldSpawn = true;
+                _arrowTimer = .60f;
+                _clickedField = FindField(target.GetX() + 1, target.GetY() + 1).GetComponent<Field>();
+                _arrowSpawnAmount = 1;
+
+                return;
+            }
         }
 
         StartMoveAction(enemy);
@@ -643,16 +663,37 @@ public class Arena : MonoBehaviour
         Unit target = null;
         int lastHealth = int.MaxValue;
 
-        for (var x = source.GetX() - 1; x <= source.GetX() + 1; x++)
-        {
-            for (var y = source.GetY() - 1; y <= source.GetY() + 1; y++)
+        if (source.GetClass() == Class.Swordsman) { 
+            for (var x = source.GetX() - 1; x <= source.GetX() + 1; x++)
             {
-                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && !_activeStage.GetBoard()[x, y].IsEnemy())
+                for (var y = source.GetY() - 1; y <= source.GetY() + 1; y++)
                 {
-                    if (_activeStage.Get(x, y).GetHealth() < lastHealth)
+                    if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && !_activeStage.GetBoard()[x, y].IsEnemy())
                     {
-                        target = _activeStage.GetBoard()[x, y];
-                        lastHealth = _activeStage.Get(x, y).GetHealth();
+                        if (_activeStage.Get(x, y).GetHealth() < lastHealth)
+                        {
+                            target = _activeStage.GetBoard()[x, y];
+                            lastHealth = _activeStage.Get(x, y).GetHealth();
+                        }
+                    }
+                }
+            }
+        }
+        else if (source.GetClass() == Class.Archer)
+        {
+            const int range = 4;
+
+            for (var x = source.GetX() - range; x <= source.GetX() + range; x++)
+            {
+                for (var y = source.GetY() - range; y <= source.GetY() + range; y++)
+                {
+                    if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && !_activeStage.GetBoard()[x, y].IsEnemy())
+                    {
+                        if (_activeStage.Get(x, y).GetHealth() < lastHealth)
+                        {
+                            target = _activeStage.GetBoard()[x, y];
+                            lastHealth = _activeStage.Get(x, y).GetHealth();
+                        }
                     }
                 }
             }

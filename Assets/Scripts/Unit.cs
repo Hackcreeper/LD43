@@ -250,6 +250,12 @@ public class Unit : MonoBehaviour
         if (!delayed)
         {
             _health -= damage;
+
+            if (_health <= 0)
+            {
+                _onDie?.Invoke(this);
+                Destroy(gameObject);
+            }
             return;
         }
 
