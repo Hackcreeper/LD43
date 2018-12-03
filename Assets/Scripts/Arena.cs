@@ -38,6 +38,12 @@ public class Arena : MonoBehaviour
     [SerializeField]
     private PostProcessingProfile[] _shaderProfiles;
 
+    [SerializeField]
+    private GameObject _sacrificeCanvas;
+
+    [SerializeField]
+    private Transform _sacrificeCamera;
+
     public const int FIELD_WIDTH = 9;
     public const int FIELD_HEIGHT = 6;
 
@@ -61,7 +67,7 @@ public class Arena : MonoBehaviour
     {
         Instance = this;
         _stages = new string[4][];
-        _stages[0] = new string[] { "Swordsman", "Healer", "Healer" };
+        _stages[0] = new string[] { "Swordsman" };
         _stages[1] = new string[] { "Archer", };
         _stages[2] = new string[] { "Archer", };
         _stages[3] = new string[] { "Swordsman", };
@@ -74,9 +80,14 @@ public class Arena : MonoBehaviour
     {
         _playerUnits = new List<Unit>();
 
-        for (int i = 0; i < 10; i++)
+        var selectedClasses = new string[]
         {
-            var randomClass = _classes[Random.Range(0, _classes.Length)];
+            "Swordsman", "Archer", "Healer", "Archer", "Swordsman"
+        };
+
+        for (int i = 0; i < selectedClasses.Length; i++)
+        {
+            var randomClass = selectedClasses[i];
             var unit = Instantiate(Resources.Load<GameObject>(randomClass));
 
             var component = unit.GetComponent<Unit>();
@@ -767,7 +778,13 @@ public class Arena : MonoBehaviour
 
             if (_enemyUnits.Count <= 0)
             {
-                LoadStage(new Stage(this, _stages[_activeStage.GetIndex()+1], _activeStage.GetIndex() + 1));
+                _sacrificeCanvas.SetActive(true);
+                Camera.main.transform.position = _sacrificeCamera.position;
+                _nextButton.SetActive(false);
+                _turnText.gameObject.SetActive(false);
+
+                _playersTurn = false;
+                _sacrificeCanvas.GetComponent<Sacrifice>().GoOn();
             }
         });
     }
@@ -838,5 +855,11 @@ public class Arena : MonoBehaviour
         }
 
         return target;
+    }
+
+    public void NextStage()
+    {
+        _playersTurn = true;
+        LoadStage(new Stage(this, _stages[_activeStage.GetIndex() + 1], _activeStage.GetIndex() + 1));
     }
 }

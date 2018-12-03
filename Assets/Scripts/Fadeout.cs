@@ -10,5 +10,10 @@ public class Fadeout : MonoBehaviour
             new Color(1f, 1f, 1f, 0f),
             2f * Time.deltaTime
         );
+
+        if (GetComponent<Image>().color.a <= 0.1f)
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

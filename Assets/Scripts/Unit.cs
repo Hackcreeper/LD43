@@ -106,6 +106,9 @@ public class Unit : MonoBehaviour
             case Class.Swordsman:
                 return "Swordsman";
 
+            case Class.Healer:
+                return "Healer";
+
             default:
                 return "-";
         }
