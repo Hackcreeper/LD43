@@ -527,7 +527,7 @@ MonoBehaviour:
   _class: 2
   _enemy: 0
   _skillReload: 0
-  _icon: {fileID: 21300000, guid: cb871bff579404641b4126dad48d30f7, type: 3}
+  _icon: {fileID: 21300000, guid: 8e034c2af1c50c045bfd97da77e3db2f, type: 3}
   _healthbar: {fileID: 4034684499365382}
 --- !u!136 &136440735363671226
 CapsuleCollider:

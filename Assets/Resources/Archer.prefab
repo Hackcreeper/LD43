@@ -516,7 +516,7 @@ MonoBehaviour:
   _class: 1
   _enemy: 0
   _skillReload: 5
-  _icon: {fileID: 21300000, guid: ceca045e6bb475d4ab88f04cab485e6e, type: 3}
+  _icon: {fileID: 21300000, guid: 574ab34cdea477945b5137b5f087e556, type: 3}
   _healthbar: {fileID: 4382225004090804}
 --- !u!114 &114936639109242390
 MonoBehaviour:
