@@ -569,6 +569,7 @@ MonoBehaviour:
   _skillButton: {fileID: 114268946411487100}
   _skillText: {fileID: 114322388773056992}
   _iconImage: {fileID: 114389044560187578}
+  _attackText: {fileID: 114373506872412322}
 --- !u!114 &114408665035236804
 MonoBehaviour:
   m_ObjectHideFlags: 1

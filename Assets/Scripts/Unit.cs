@@ -153,12 +153,12 @@ public class Unit : MonoBehaviour
             _healthbar.localScale.z
         );
 
-        if (_healthToSub > 0)
+        if (_healthToSub != 0)
         {
             _subTimer -= Time.deltaTime;
             if (_subTimer <= 0f)
             {
-                _health -= _healthToSub;
+                _health = Mathf.Clamp(_health - _healthToSub, 0, 100);
                 _healthToSub = 0;
             }
         }
@@ -249,11 +249,11 @@ public class Unit : MonoBehaviour
     {
         if (!delayed)
         {
-            _health -= damage;
+            _health = Mathf.Clamp(_health - damage, 0, 100);
             return;
         }
 
-        _healthToSub += damage;
+        _healthToSub = damage;
         _subTimer = 1.5f;
     }
 

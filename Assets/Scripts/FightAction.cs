@@ -8,5 +8,9 @@
 
     SmashAttack,
 
-    RapidFire
+    RapidFire,
+
+    Heal,
+
+    HealAll,
 }
