@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.PostProcessing;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -31,6 +32,12 @@ public class Arena : MonoBehaviour
     [SerializeField]
     private Text _turnText;
 
+    [SerializeField]
+    private PostProcessingBehaviour _cameraShader;
+
+    [SerializeField]
+    private PostProcessingProfile[] _shaderProfiles;
+
     public const int FIELD_WIDTH = 9;
     public const int FIELD_HEIGHT = 6;
 
@@ -51,11 +58,14 @@ public class Arena : MonoBehaviour
     public void Start()
     {
         Instance = this;
-        _stages = new string[1][];
-        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman" };
+        _stages = new string[4][];
+        _stages[0] = new string[] { "Swordsman" };
+        _stages[1] = new string[] { "Archer", };
+        _stages[2] = new string[] { "Archer", };
+        _stages[3] = new string[] { "Swordsman", };
 
         InitPlayerUnits();
-        LoadStage(new Stage(this, _stages[0]));
+        LoadStage(new Stage(this, _stages[0], 0));
     }
 
     private void InitPlayerUnits()
@@ -88,6 +98,13 @@ public class Arena : MonoBehaviour
     {
         _activeStage = stage;
         _activeStage.Start();
+
+        _cameraShader.profile = _shaderProfiles[_activeStage.GetIndex()];
+
+        foreach (var field in _fields)
+        {
+            field.GetComponent<Field>().SetIndex(stage.GetIndex());
+        }
 
         StartTurn();
     }
@@ -590,9 +607,7 @@ public class Arena : MonoBehaviour
 
             if (_enemyUnits.Count <= 0)
             {
-                // game win :-3 
-                // go to the next stage
-                Debug.Log("Next stage!");
+                LoadStage(new Stage(this, _stages[_activeStage.GetIndex()+1], _activeStage.GetIndex() + 1));
             }
         });
     }
