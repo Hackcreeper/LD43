@@ -46,7 +46,7 @@ public class Arena : MonoBehaviour
     {
         Instance = this;
         _stages = new string[1][];
-        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman" };
+        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman", "Archer", "Swordsman", "Swordsman", "Archer" };
 
         InitPlayerUnits();
         LoadStage(new Stage(this, _stages[0]));
@@ -198,13 +198,17 @@ public class Arena : MonoBehaviour
             return;
         }
 
-        // TODO: Gleiche Range wie regulärer Angriff?
         for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
         {
             for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
             {
                 if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && _activeStage.GetBoard()[x, y].IsEnemy())
                 {
+                    if (x != unit.GetX() && y != unit.GetY())
+                    {
+                        continue;
+                    }
+
                     var field = FindField(x + 1, y + 1);
                     field.GetComponent<Field>().Activate(FightAction.Attack);
                 }
@@ -286,7 +290,47 @@ public class Arena : MonoBehaviour
             _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Smash");
             _actionUnit.ActionMade();
 
-            _activeStage.GetBoard()[newX, newY].SubHealth(45, true);
+            if (newX == _actionUnit.GetX() && newY > _actionUnit.GetY())
+            {
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX(), _actionUnit.GetY() + 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() + 2)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX(), _actionUnit.GetY() + 2)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() + 2)?.SubHealth(40, true);
+
+            }
+            else if (newX == _actionUnit.GetX() && newY < _actionUnit.GetY())
+            {
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX(), _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() - 2)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX(), _actionUnit.GetY() - 2)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() - 2)?.SubHealth(40, true);
+            }
+            else if (newY == _actionUnit.GetY() && newX > _actionUnit.GetX())
+            {
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY())?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 1, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+
+                _activeStage.Get(_actionUnit.GetX() + 2, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 2, _actionUnit.GetY())?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() + 2, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+            }
+            else if (newY == _actionUnit.GetY() && newX < _actionUnit.GetX())
+            {
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY())?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+
+                _activeStage.Get(_actionUnit.GetX() - 2, _actionUnit.GetY() - 1)?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() - 2, _actionUnit.GetY())?.SubHealth(40, true);
+                _activeStage.Get(_actionUnit.GetX() - 2, _actionUnit.GetY() + 1)?.SubHealth(40, true);
+            }
 
             _actionUnit.SkillUsed();
 
@@ -341,7 +385,7 @@ public class Arena : MonoBehaviour
 
     private void HandleEnemyTurn()
     {
-        if (_enemyUnitsTodo.Count == 0)
+        if (_enemyUnitsTodo.Count == 0 || true)
         {
             NextTurn();
             return;
@@ -363,7 +407,6 @@ public class Arena : MonoBehaviour
             return;
         }
 
-        /*
         StartMoveAction(enemy);
 
         List<Field> _possibleFields = new List<Field>();
@@ -389,8 +432,10 @@ public class Arena : MonoBehaviour
 
         _activeStage.Set(newX, newY, enemy);
 
-        enemy.SetBoardPosition(newX, newY);*/
+        enemy.SetBoardPosition(newX, newY);
+
         _enemyUnitsTodo.Remove(enemy);
+        EndAction();
     }
 
     public bool IsPlayersTurn() => _playersTurn;

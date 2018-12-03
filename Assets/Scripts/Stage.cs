@@ -76,4 +76,14 @@ public class Stage
     {
         _board[x, y] = unit;
     }
+
+    public Unit Get(int x, int y)
+    {
+        if (x >= Arena.FIELD_WIDTH || y >= Arena.FIELD_HEIGHT || x < 0 || y < 0)
+        {
+            return null;
+        }
+
+        return _board[x, y];
+    }
 }
