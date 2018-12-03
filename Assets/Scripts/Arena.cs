@@ -43,6 +43,11 @@ public class Arena : MonoBehaviour
 
     private bool _playersTurn = true;
 
+    private bool _arrowShouldSpawn = false;
+    private float _arrowTimer = 0f;
+    private Field _clickedField;
+    private int _arrowSpawnAmount = 0;
+
     public void Start()
     {
         Instance = this;
@@ -57,7 +62,7 @@ public class Arena : MonoBehaviour
     {
         _playerUnits = new List<Unit>();
 
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 10; i++)
         {
             var randomClass = _classes[Random.Range(0, _classes.Length)];
             var unit = Instantiate(Resources.Load<GameObject>(randomClass));
@@ -118,6 +123,47 @@ public class Arena : MonoBehaviour
 
     private void Update()
     {
+        if (_arrowShouldSpawn)
+        {
+            _arrowTimer -= Time.deltaTime;
+            if (_arrowTimer <= 0f)
+            {
+                var coordinates = _clickedField.name.Replace("Field_", "").Split('_');
+                var newX = int.Parse(coordinates[0]) - 1;
+                var newY = int.Parse(coordinates[1]) - 1;
+
+                var unit = _actionUnit;
+                var shouldEnd = _arrowSpawnAmount == 1;
+
+                var arrow = Instantiate(Resources.Load<GameObject>("Arrow"));
+                arrow.transform.position = _actionUnit.transform.position + new Vector3(0, 1.3f, 0);
+                arrow.transform.rotation = _actionUnit.transform.rotation;
+                arrow.transform.Rotate(0, 180, 0);
+                arrow.transform.Translate(0, 0, -1);
+                arrow.GetComponent<Arrow>().SetDestination(_clickedField.transform.position);
+                arrow.GetComponent<Arrow>().RegisterOnHit(() =>
+                {
+                    _activeStage.Get(newX, newY)?.SubHealth(15, false);
+                    unit.ActionMade();
+
+                    if (shouldEnd)
+                    {
+                        EndAction();
+                    }
+                });
+
+                _arrowSpawnAmount--;
+                if (_arrowSpawnAmount > 0)
+                {
+                    _arrowTimer = 0.1f;
+                    return;
+                }
+
+                _arrowShouldSpawn = false;
+                _clickedField = null;
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape) && IsPanelOpen())
         {
             Destroy(_actionPanel);
@@ -183,16 +229,40 @@ public class Arena : MonoBehaviour
             return;
         }
 
-        for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
+        if (unit.GetClass() == Class.Swordsman)
         {
-            for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
+            for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
             {
-                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && _activeStage.GetBoard()[x, y].IsEnemy())
+                for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
                 {
-                    var field = FindField(x + 1, y + 1);
-                    field.GetComponent<Field>().Activate(FightAction.Attack);
+                    if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && _activeStage.GetBoard()[x, y].IsEnemy())
+                    {
+                        var field = FindField(x + 1, y + 1);
+                        field.GetComponent<Field>().Activate(FightAction.Attack);
+                    }
                 }
             }
+
+            return;
+        }
+
+        if (unit.GetClass() == Class.Archer)
+        {
+            const int range = 5;
+
+            for (var x = unit.GetX() - range; x <= unit.GetX() + range; x++)
+            {
+                for (var y = unit.GetY() - range; y <= unit.GetY() + range; y++)
+                {
+                    if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && _activeStage.GetBoard()[x, y].IsEnemy())
+                    {
+                        var field = FindField(x + 1, y + 1);
+                        field.GetComponent<Field>().Activate(FightAction.Attack);
+                    }
+                }
+            }
+
+            return;
         }
     }
 
@@ -221,6 +291,33 @@ public class Arena : MonoBehaviour
 
                     var field = FindField(x + 1, y + 1);
                     field.GetComponent<Field>().Activate(FightAction.Attack);
+                }
+            }
+        }
+    }
+
+    public void StartRapidFireAction(Unit unit)
+    {
+        _currentAction = FightAction.RapidFire;
+        _actionUnit = unit;
+
+        StartAction();
+
+        if (unit.IsEnemy())
+        {
+            return;
+        }
+
+        const int range = 5;
+
+        for (var x = unit.GetX() - range; x <= unit.GetX() + range; x++)
+        {
+            for (var y = unit.GetY() - range; y <= unit.GetY() + range; y++)
+            {
+                if (FindField(x + 1, y + 1) && _activeStage.GetBoard()[x, y] != null && _activeStage.GetBoard()[x, y].IsEnemy())
+                {
+                    var field = FindField(x + 1, y + 1);
+                    field.GetComponent<Field>().Activate(FightAction.RapidFire);
                 }
             }
         }
@@ -261,7 +358,7 @@ public class Arena : MonoBehaviour
         _currentAction = FightAction.None;
         _actionUnit = null;
 
-        if (unit.IsEnemy())
+        if (unit && unit.IsEnemy())
         {
             HandleEnemyTurn();
         }
@@ -287,8 +384,27 @@ public class Arena : MonoBehaviour
 
         if (_currentAction == FightAction.Attack)
         {
-            _actionUnit.MoveToHalfWay(field.transform.position);
-            _activeStage.GetBoard()[newX, newY].SubHealth(25, true);
+            if (_actionUnit.GetClass() == Class.Swordsman)
+            {
+                _actionUnit.MoveToHalfWay(field.transform.position);
+                _activeStage.GetBoard()[newX, newY].SubHealth(25, true);
+
+                return;
+            }
+
+            if (_actionUnit.GetClass() == Class.Archer)
+            {
+                _actionUnit.transform.LookAt(field.transform.position);
+
+                _actionUnit.GetComponentInChildren<Animator>().Play("Archer_Shot");
+
+                _arrowShouldSpawn = true;
+                _arrowTimer = .60f;
+                _clickedField = field;
+                _arrowSpawnAmount = 1;
+
+                return;
+            }
 
             return;
         }
@@ -345,6 +461,22 @@ public class Arena : MonoBehaviour
             _actionUnit.SkillUsed();
 
             EndAction();
+
+            return;
+        }
+
+        if (_currentAction == FightAction.RapidFire)
+        {
+            _actionUnit.transform.LookAt(field.transform.position);
+
+            _actionUnit.GetComponentInChildren<Animator>().Play("Archer_Shot");
+
+            _arrowShouldSpawn = true;
+            _arrowTimer = .60f;
+            _clickedField = field;
+            _arrowSpawnAmount = 4;
+
+            return;
         }
     }
 

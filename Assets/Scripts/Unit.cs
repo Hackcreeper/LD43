@@ -32,9 +32,9 @@ public class Unit : MonoBehaviour
 
     private int _skillReloadCounter;
 
-    private bool _skillUnlocked;
+    private bool _skillUnlocked = true;
 
-    private int _health = 1;
+    private int _health = 100;
 
     private int _healthToSub = 0;
 
