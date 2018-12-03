@@ -59,7 +59,7 @@ public class Arena : MonoBehaviour
     {
         Instance = this;
         _stages = new string[4][];
-        _stages[0] = new string[] { "Swordsman", "Archer", "Swordsman" };
+        _stages[0] = new string[] { "Swordsman", };
         _stages[1] = new string[] { "Archer", };
         _stages[2] = new string[] { "Archer", };
         _stages[3] = new string[] { "Swordsman", };
