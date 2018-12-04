@@ -56,6 +56,9 @@ public class Arena : MonoBehaviour
     [SerializeField]
     private AudioClip _smashSound;
 
+    [SerializeField]
+    private GameObject _escapeText;
+
     public const int FIELD_WIDTH = 9;
     public const int FIELD_HEIGHT = 6;
 
@@ -82,7 +85,7 @@ public class Arena : MonoBehaviour
         _stages[0] = new string[] { "Healer", "Swordsman", "Archer" };
         _stages[1] = new string[] { "Archer", "Archer", "Swordsman", "Swordsman" };
         _stages[2] = new string[] { "Healer", "Swordsman", "Swordsman" };
-        _stages[3] = new string[] { "Swordsman", "Healer", "Archer" };
+        _stages[3] = new string[] { "Swordsman", "Archer" };
 
         InitPlayerUnits();
         LoadStage(new Stage(this, _stages[0], 0));
@@ -159,6 +162,8 @@ public class Arena : MonoBehaviour
 
         _actionPanel.GetComponent<ActionPanel>().SetUnit(unit);
         _nextButton.SetActive(false);
+
+        _escapeText.SetActive(true);
     }
 
     public bool IsPanelOpen() => _actionPanel != null;
@@ -228,6 +233,7 @@ public class Arena : MonoBehaviour
         {
             Destroy(_actionPanel);
             _nextButton.SetActive(true);
+            _escapeText.SetActive(false);
         }
         else if (Input.GetKeyDown(KeyCode.Escape) && _currentAction != FightAction.None)
         {
@@ -264,6 +270,8 @@ public class Arena : MonoBehaviour
             return;
         }
 
+        _escapeText.SetActive(true);
+
         for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
         {
             for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
@@ -288,6 +296,8 @@ public class Arena : MonoBehaviour
         {
             return;
         }
+
+        _escapeText.SetActive(true);
 
         if (unit.GetClass() == Class.Swordsman)
         {
@@ -338,6 +348,8 @@ public class Arena : MonoBehaviour
             return;
         }
 
+        _escapeText.SetActive(true);
+
         for (var x = unit.GetX() - 1; x <= unit.GetX() + 1; x++)
         {
             for (var y = unit.GetY() - 1; y <= unit.GetY() + 1; y++)
@@ -368,6 +380,8 @@ public class Arena : MonoBehaviour
             return;
         }
 
+        _escapeText.SetActive(true);
+
         const int range = 5;
 
         for (var x = unit.GetX() - range; x <= unit.GetX() + range; x++)
@@ -394,6 +408,8 @@ public class Arena : MonoBehaviour
         {
             return;
         }
+
+        _escapeText.SetActive(true);
 
         const int range = 4;
 
@@ -453,6 +469,8 @@ public class Arena : MonoBehaviour
 
     private void EndAction()
     {
+        _escapeText.SetActive(false);
+
         if (_playersTurn)
         {
             _nextButton.SetActive(true);
@@ -640,6 +658,7 @@ public class Arena : MonoBehaviour
 
     private void StartTurn()
     {
+        _escapeText.SetActive(false);
         _nextButton.SetActive(false);
         _turnText.text = _playersTurn ? "Your turn" : "Enemies turn";
 
