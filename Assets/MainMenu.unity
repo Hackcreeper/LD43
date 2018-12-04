@@ -1466,52 +1466,6 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1261887605}
   m_CullTransparentMesh: 0
---- !u!1001 &1322635947
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4134043944707108, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 15.4885025
-      objectReference: {fileID: 0}
-    - target: {fileID: 4134043944707108, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 4.0643945
-      objectReference: {fileID: 0}
-    - target: {fileID: 4134043944707108, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -32.33805
-      objectReference: {fileID: 0}
-    - target: {fileID: 4134043944707108, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4134043944707108, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4134043944707108, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4134043944707108, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4134043944707108, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-      propertyPath: m_RootOrder
-      value: 17
-      objectReference: {fileID: 0}
-    - target: {fileID: 1741774757394294, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-      propertyPath: m_Name
-      value: Healer (2)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 0a9d011f9e79a42e78e4b2bab2ec379e, type: 2}
-  m_IsPrefabAsset: 0
 --- !u!195 &1387152881 stripped
 NavMeshAgent:
   m_CorrespondingSourceObject: {fileID: 195093539395373174, guid: c519144ed59d64e3380122731a939b75,
