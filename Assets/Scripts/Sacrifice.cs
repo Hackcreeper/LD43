@@ -49,6 +49,9 @@ public class Sacrifice : MonoBehaviour
     [SerializeField]
     private GameObject _turnText;
 
+    [SerializeField]
+    private AudioClip _sound;
+
     private bool _sacrificed;
     private float _timer;
     private Unit _killed;
@@ -56,6 +59,8 @@ public class Sacrifice : MonoBehaviour
     private float _timer2;
     private float _timer3;
     private float _timer4;
+
+    private bool _soundPlayed;
 
     private bool _once;
 
@@ -67,6 +72,7 @@ public class Sacrifice : MonoBehaviour
         _timer3 = 2f;
         _timer4 = 1.5f;
         _once = false;
+        _soundPlayed = false;
 
         _animator.Play("Closed");
         _sacrificeText.color = new Color(0.6698113f, 0, 0, 1);
@@ -123,6 +129,9 @@ public class Sacrifice : MonoBehaviour
         unit.transform.position = _sacrificeLocation.position;
         unit.gameObject.AddComponent<Rigidbody>().mass = 10f;
 
+        GetComponent<AudioSource>().clip = _sound;
+        GetComponent<AudioSource>().Play();
+
         _killed = unit;
         _sacrificed = true;
     }
@@ -140,8 +149,13 @@ public class Sacrifice : MonoBehaviour
             return;
         }
 
-        _killed.SubHealth(10000, false);
+        _killed.SubHealth(10000, false, false);
         _animator.SetBool("open", true);
+
+        if (!_soundPlayed) {
+            _soundPlayed = true;
+            _animator.GetComponent<AudioSource>().Play();
+        }
 
         var all = Arena.Instance.GetPlayerUnits();
         foreach(var unit in all)

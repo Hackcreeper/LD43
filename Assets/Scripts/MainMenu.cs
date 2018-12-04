@@ -3,7 +3,8 @@ using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour 
+public class 
+MainMenu : MonoBehaviour 
 {
     [SerializeField]
     private Text[] _texts;
@@ -22,6 +23,8 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField]
     private Transform _cameraTarget;
+
+    private bool _playedSound;
 
     private bool _starting = false;
 
@@ -47,6 +50,11 @@ public class MainMenu : MonoBehaviour
         }
 
         _doorAnimator.SetBool("open", true);
+        if (!_playedSound)
+        {
+            GetComponent<AudioSource>().Play();
+            _playedSound = true;
+        }
 
         foreach (var agent in _agents)
         {
