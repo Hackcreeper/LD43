@@ -82,7 +82,7 @@ public class Arena : MonoBehaviour
         _stages[0] = new string[] { "Healer", "Swordsman", "Archer" };
         _stages[1] = new string[] { "Archer", "Archer", "Swordsman", "Swordsman" };
         _stages[2] = new string[] { "Healer", "Swordsman", "Swordsman" };
-        _stages[3] = new string[] { "Swordsman", "Healer", "Archer" };
+        _stages[3] = new string[] { "Swordsman", "Archer" };
 
         InitPlayerUnits();
         LoadStage(new Stage(this, _stages[0], 0));
