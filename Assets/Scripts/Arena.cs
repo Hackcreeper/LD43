@@ -418,6 +418,9 @@ public class Arena : MonoBehaviour
 
         StartAction();
 
+        GetComponent<AudioSource>().clip = _healSound;
+        GetComponent<AudioSource>().Play();
+
         unit.GetComponentInChildren<Animator>().Play("Healer_HealAll");
 
         _playerUnits.ForEach(player =>
