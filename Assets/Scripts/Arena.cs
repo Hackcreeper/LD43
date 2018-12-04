@@ -134,6 +134,11 @@ public class Arena : MonoBehaviour
             field.GetComponent<Field>().SetIndex(stage.GetIndex());
         }
 
+        if (Music.Instance)
+        {
+            Music.Instance.SetStage(stage.GetIndex());
+        }
+
         StartTurn();
     }
 
