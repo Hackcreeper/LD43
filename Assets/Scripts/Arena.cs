@@ -801,6 +801,12 @@ public class Arena : MonoBehaviour
 
             if (_enemyUnits.Count <= 0)
             {
+                if (_activeStage.GetIndex() == 3)
+                {
+                    SceneManager.LoadScene("Win");
+                    return;
+                }
+
                 _sacrificeCanvas.SetActive(true);
                 Camera.main.transform.position = _sacrificeCamera.position;
                 _nextButton.SetActive(false);
