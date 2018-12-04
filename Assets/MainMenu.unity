@@ -1996,7 +1996,7 @@ MonoBehaviour:
   _stages:
   - {fileID: 8300000, guid: 96fde0067375a4fe68f65da9719ca421, type: 3}
   - {fileID: 8300000, guid: b2529b63992d446bb8f40ab73b9e3687, type: 3}
-  - {fileID: 8300000, guid: 800e2b8d2281e40869f3846b8bda6031, type: 3}
+  - {fileID: 8300000, guid: d056301cb4b16b84cb678ddac12c19fe, type: 3}
   - {fileID: 8300000, guid: 800e2b8d2281e40869f3846b8bda6031, type: 3}
 --- !u!1 &2031185166
 GameObject:
