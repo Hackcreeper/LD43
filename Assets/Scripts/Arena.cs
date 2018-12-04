@@ -199,7 +199,11 @@ public class Arena : MonoBehaviour
                 arrow.GetComponent<Arrow>().SetDestination(_clickedField.transform.position);
                 arrow.GetComponent<Arrow>().RegisterOnHit(() =>
                 {
-                    _activeStage.Get(newX, newY)?.SubHealth(15, false);
+                    if (_activeStage.Get(newX, newY))
+                    {
+                        _activeStage.Get(newX, newY).SubHealth(15, false);
+                    }
+
                     unit.ActionMade();
 
                     if (shouldEnd)
