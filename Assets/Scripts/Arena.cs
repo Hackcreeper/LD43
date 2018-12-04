@@ -79,10 +79,10 @@ public class Arena : MonoBehaviour
     {
         Instance = this;
         _stages = new string[4][];
-        _stages[0] = new string[] { "Swordsman" };
-        _stages[1] = new string[] { "Archer", };
-        _stages[2] = new string[] { "Archer", };
-        _stages[3] = new string[] { "Swordsman", };
+        _stages[0] = new string[] { "Healer", "Swordsman", "Archer" };
+        _stages[1] = new string[] { "Archer", "Archer", "Swordsman", "Swordsman" };
+        _stages[2] = new string[] { "Healer", "Swordsman", "Swordsman" };
+        _stages[3] = new string[] { "Swordsman", "Healer", "Archer" };
 
         InitPlayerUnits();
         LoadStage(new Stage(this, _stages[0], 0));
@@ -94,7 +94,7 @@ public class Arena : MonoBehaviour
 
         var selectedClasses = new string[]
         {
-            "Swordsman", "Archer", "Healer", "Archer", "Swordsman"
+            "Swordsman", "Archer", "Healer", "Archer", "Healer"
         };
 
         for (int i = 0; i < selectedClasses.Length; i++)
@@ -589,6 +589,8 @@ public class Arena : MonoBehaviour
             _actionUnit.transform.LookAt(field.transform.position);
 
             _actionUnit.GetComponentInChildren<Animator>().Play("Archer_Shot");
+
+            _actionUnit.SkillUsed();
 
             _arrowShouldSpawn = true;
             _arrowTimer = .60f;
