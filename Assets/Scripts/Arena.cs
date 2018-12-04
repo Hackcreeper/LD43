@@ -79,10 +79,10 @@ public class Arena : MonoBehaviour
     {
         Instance = this;
         _stages = new string[4][];
-        _stages[0] = new string[] { "Swordsman" };
-        _stages[1] = new string[] { "Archer", };
-        _stages[2] = new string[] { "Archer", };
-        _stages[3] = new string[] { "Swordsman", };
+        _stages[0] = new string[] { "Healer", "Swordsman", "Archer" };
+        _stages[1] = new string[] { "Archer", "Archer", "Swordsman", "Swordsman" };
+        _stages[2] = new string[] { "Healer", "Swordsman", "Swordsman" };
+        _stages[3] = new string[] { "Swordsman", "Healer", "Archer" };
 
         InitPlayerUnits();
         LoadStage(new Stage(this, _stages[0], 0));
@@ -94,7 +94,7 @@ public class Arena : MonoBehaviour
 
         var selectedClasses = new string[]
         {
-            "Swordsman", "Archer", "Healer", "Archer", "Swordsman"
+            "Swordsman", "Archer", "Healer", "Archer", "Healer"
         };
 
         for (int i = 0; i < selectedClasses.Length; i++)
@@ -418,6 +418,9 @@ public class Arena : MonoBehaviour
 
         StartAction();
 
+        GetComponent<AudioSource>().clip = _healSound;
+        GetComponent<AudioSource>().Play();
+
         unit.GetComponentInChildren<Animator>().Play("Healer_HealAll");
 
         _playerUnits.ForEach(player =>
@@ -586,6 +589,8 @@ public class Arena : MonoBehaviour
             _actionUnit.transform.LookAt(field.transform.position);
 
             _actionUnit.GetComponentInChildren<Animator>().Play("Archer_Shot");
+
+            _actionUnit.SkillUsed();
 
             _arrowShouldSpawn = true;
             _arrowTimer = .60f;
@@ -798,6 +803,12 @@ public class Arena : MonoBehaviour
 
             if (_enemyUnits.Count <= 0)
             {
+                if (_activeStage.GetIndex() == 3)
+                {
+                    SceneManager.LoadScene("Win");
+                    return;
+                }
+
                 _sacrificeCanvas.SetActive(true);
                 Camera.main.transform.position = _sacrificeCamera.position;
                 _nextButton.SetActive(false);
