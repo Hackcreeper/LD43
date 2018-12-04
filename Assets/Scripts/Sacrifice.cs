@@ -77,6 +77,12 @@ public class Sacrifice : MonoBehaviour
         _animator.Play("Closed");
         _sacrificeText.color = new Color(0.6698113f, 0, 0, 1);
 
+        _button1.gameObject.SetActive(false);
+        _button2.gameObject.SetActive(false);
+        _button3.gameObject.SetActive(false);
+        _button4.gameObject.SetActive(false);
+        _button5.gameObject.SetActive(false);
+
         var units = Arena.Instance.GetPlayerUnits();
 
         if (units.Length >= 1)

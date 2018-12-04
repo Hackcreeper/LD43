@@ -850,7 +850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &124782422
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1659,7 +1659,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 186368619}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.6, z: 125.5}
+  m_LocalPosition: {x: 0, y: 1.5, z: 125.5}
   m_LocalScale: {x: 50, y: 1, z: 25}
   m_Children: []
   m_Father: {fileID: 1287153544}
@@ -8315,7 +8315,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 100}
-  m_SizeDelta: {x: 400, y: 42}
+  m_SizeDelta: {x: 600, y: 42}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1678299382
 MonoBehaviour:
@@ -8363,7 +8363,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Press escape to cancel action
+  m_Text: Press escape or backspace to cancel action
 --- !u!222 &1678299384
 CanvasRenderer:
   m_ObjectHideFlags: 0

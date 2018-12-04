@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 195400646299635834}
   - component: {fileID: 82962719258200352}
   m_Layer: 2
-  m_Name: Swordsman
+  m_Name: Boss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -630,7 +630,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1f219951a4fc741cd955904fea00ed0c, type: 3}
   - {fileID: 8300000, guid: 430b1881663ed4198a483d6d3a7fe0e6, type: 3}
   _swordSound: {fileID: 8300000, guid: caf77ccd9c7e4984c9ec899dd2086e19, type: 3}
-  _boss: 0
+  _boss: 1
 --- !u!136 &136924447948643226
 CapsuleCollider:
   m_ObjectHideFlags: 1

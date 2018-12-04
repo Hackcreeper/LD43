@@ -85,7 +85,7 @@ public class Arena : MonoBehaviour
         _stages[0] = new string[] { "Healer", "Swordsman", "Archer" };
         _stages[1] = new string[] { "Archer", "Archer", "Swordsman", "Swordsman" };
         _stages[2] = new string[] { "Healer", "Swordsman", "Swordsman" };
-        _stages[3] = new string[] { "Swordsman", "Archer" };
+        _stages[3] = new string[] { "Boss", "Archer" };
 
         InitPlayerUnits();
         LoadStage(new Stage(this, _stages[0], 0));
@@ -110,6 +110,14 @@ public class Arena : MonoBehaviour
             component.SetArena(this);
             component.RegisterOnDie((deadUnit) =>
             {
+                _infoSprites.ForEach(info => Destroy(info));
+                _infoSprites.Clear();
+
+                if (_playersTurn)
+                {
+                    ShowInfos();
+                }
+
                 _playerUnits.Remove(deadUnit);
 
                 if (_playerUnits.Count <= 0)
@@ -234,13 +242,13 @@ public class Arena : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape) && IsPanelOpen())
+        if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace)) && IsPanelOpen())
         {
             Destroy(_actionPanel);
             _nextButton.SetActive(true);
             _escapeText.SetActive(false);
         }
-        else if (Input.GetKeyDown(KeyCode.Escape) && _currentAction != FightAction.None)
+        else if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace)) && _currentAction != FightAction.None)
         {
             EndAction();
         }

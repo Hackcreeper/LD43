@@ -30,6 +30,9 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private AudioClip _swordSound;
 
+    [SerializeField]
+    private bool _boss;
+
     private Action<Unit> _onDie;
 
     private bool _skillReady;
@@ -67,6 +70,11 @@ public class Unit : MonoBehaviour
     private void Start()
     {
         _skillReloadCounter = _skillReload;
+
+        if (_boss)
+        {
+            transform.localScale = Vector3.one;
+        }
     }
 
     public void SetArena(Arena arena)
