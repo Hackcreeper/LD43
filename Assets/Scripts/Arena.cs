@@ -38,6 +38,24 @@ public class Arena : MonoBehaviour
     [SerializeField]
     private PostProcessingProfile[] _shaderProfiles;
 
+    [SerializeField]
+    private GameObject _sacrificeCanvas;
+
+    [SerializeField]
+    private Transform _sacrificeCamera;
+
+    [SerializeField]
+    private AudioClip _healSound;
+
+    [SerializeField]
+    private AudioClip _shootSound;
+
+    [SerializeField]
+    private AudioClip _swordSound;
+
+    [SerializeField]
+    private AudioClip _smashSound;
+
     public const int FIELD_WIDTH = 9;
     public const int FIELD_HEIGHT = 6;
 
@@ -61,7 +79,7 @@ public class Arena : MonoBehaviour
     {
         Instance = this;
         _stages = new string[4][];
-        _stages[0] = new string[] { "Swordsman", "Healer", "Healer" };
+        _stages[0] = new string[] { "Swordsman" };
         _stages[1] = new string[] { "Archer", };
         _stages[2] = new string[] { "Archer", };
         _stages[3] = new string[] { "Swordsman", };
@@ -74,9 +92,14 @@ public class Arena : MonoBehaviour
     {
         _playerUnits = new List<Unit>();
 
-        for (int i = 0; i < 10; i++)
+        var selectedClasses = new string[]
         {
-            var randomClass = _classes[Random.Range(0, _classes.Length)];
+            "Swordsman", "Archer", "Healer", "Archer", "Swordsman"
+        };
+
+        for (int i = 0; i < selectedClasses.Length; i++)
+        {
+            var randomClass = selectedClasses[i];
             var unit = Instantiate(Resources.Load<GameObject>(randomClass));
 
             var component = unit.GetComponent<Unit>();
@@ -164,6 +187,9 @@ public class Arena : MonoBehaviour
 
                 var unit = _actionUnit;
                 var shouldEnd = _arrowSpawnAmount == 1;
+
+                GetComponent<AudioSource>().clip = _shootSound;
+                GetComponent<AudioSource>().Play();
 
                 var arrow = Instantiate(Resources.Load<GameObject>("Arrow"));
                 arrow.transform.position = _actionUnit.transform.position + new Vector3(0, 1.3f, 0);
@@ -503,6 +529,9 @@ public class Arena : MonoBehaviour
             _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Smash");
             _actionUnit.ActionMade();
 
+            GetComponent<AudioSource>().clip = _smashSound;
+            GetComponent<AudioSource>().Play();
+
             if (newX == _actionUnit.GetX() && newY > _actionUnit.GetY())
             {
                 _activeStage.Get(_actionUnit.GetX() - 1, _actionUnit.GetY() + 1)?.SubHealth(40, true);
@@ -571,6 +600,8 @@ public class Arena : MonoBehaviour
             _actionUnit.transform.LookAt(field.transform.position);
 
             _actionUnit.GetComponentInChildren<Animator>().Play("Sword_Hit");
+            GetComponent<AudioSource>().clip = _healSound;
+            GetComponent<AudioSource>().Play();
 
             _activeStage.Get(newX, newY).SubHealth(-20, false);
 
@@ -767,7 +798,13 @@ public class Arena : MonoBehaviour
 
             if (_enemyUnits.Count <= 0)
             {
-                LoadStage(new Stage(this, _stages[_activeStage.GetIndex()+1], _activeStage.GetIndex() + 1));
+                _sacrificeCanvas.SetActive(true);
+                Camera.main.transform.position = _sacrificeCamera.position;
+                _nextButton.SetActive(false);
+                _turnText.gameObject.SetActive(false);
+
+                _playersTurn = false;
+                _sacrificeCanvas.GetComponent<Sacrifice>().GoOn();
             }
         });
     }
@@ -838,5 +875,11 @@ public class Arena : MonoBehaviour
         }
 
         return target;
+    }
+
+    public void NextStage()
+    {
+        _playersTurn = true;
+        LoadStage(new Stage(this, _stages[_activeStage.GetIndex() + 1], _activeStage.GetIndex() + 1));
     }
 }

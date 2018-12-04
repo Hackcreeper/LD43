@@ -24,6 +24,12 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Transform _healthbar;
 
+    [SerializeField]
+    private AudioClip[] _damageSounds;
+
+    [SerializeField]
+    private AudioClip _swordSound;
+
     private Action<Unit> _onDie;
 
     private bool _skillReady;
@@ -39,6 +45,8 @@ public class Unit : MonoBehaviour
     private int _healthToSub = 0;
 
     private float _subTimer = 0f;
+
+    private float? _soundTimer;
 
     public void SetBoardPosition(int x, int y)
     {
@@ -106,6 +114,9 @@ public class Unit : MonoBehaviour
             case Class.Swordsman:
                 return "Swordsman";
 
+            case Class.Healer:
+                return "Healer";
+
             default:
                 return "-";
         }
@@ -147,6 +158,18 @@ public class Unit : MonoBehaviour
 
     private void Update()
     {
+        if (_soundTimer.HasValue)
+        {
+            _soundTimer -= Time.deltaTime;
+            if (_soundTimer <= 0f)
+            {
+                GetComponent<AudioSource>().clip = _swordSound;
+                GetComponent<AudioSource>().Play();
+
+                _soundTimer = null;
+            }
+        }
+
         _healthbar.localScale = new Vector3(
             _health / 100f,
             _healthbar.localScale.y,
@@ -158,6 +181,12 @@ public class Unit : MonoBehaviour
             _subTimer -= Time.deltaTime;
             if (_subTimer <= 0f)
             {
+                if (_healthToSub >= 0)
+                {
+                    GetComponent<AudioSource>().clip = _damageSounds[UnityEngine.Random.Range(0, _damageSounds.Length - 1)];
+                    GetComponent<AudioSource>().Play();
+                }
+
                 _health = Mathf.Clamp(_health - _healthToSub, 0, 100);
                 _healthToSub = 0;
             }
@@ -214,6 +243,7 @@ public class Unit : MonoBehaviour
 
             Arena.Instance.HalfReached();
 
+            _soundTimer = .5f;
             _moveBackTimer = 1.5f;
 
             return;
@@ -245,11 +275,18 @@ public class Unit : MonoBehaviour
 
     public Sprite GetIcon() => _icon;
 
-    public void SubHealth(int damage, bool delayed)
+    public void SubHealth(int damage, bool delayed, bool playSound = true)
     {
         if (!delayed)
         {
             _health = Mathf.Clamp(_health - damage, 0, 100);
+
+            if (playSound && damage >= 0)
+            {
+                GetComponent<AudioSource>().clip = _damageSounds[UnityEngine.Random.Range(0, _damageSounds.Length - 1)];
+                GetComponent<AudioSource>().Play();
+            }
+
             return;
         }
 
